@@ -20,9 +20,10 @@ async function addVaccine(req, res) {
          composition = req.body.composition;
     }else{
        
-        req.session.messages = { error: "input error" };
-     
-        res.redirect('/add-vaccine');
+        req.session.messages = {
+            errors: { inputError: "invalid input" },
+          };
+          return res.status(500).redirect('/add-vaccine');
     }
    
    
@@ -55,8 +56,13 @@ async function addVaccine(req, res) {
     } catch (error) {
         console.log(`Error processing transaction. ${error}`);
         console.log(error.stack);
-        req.session.messages = { error: error.stack };
-        res.redirect('/add-vaccine');
+        req.session.messages = {
+            errors: { internalServerError: error.stack },
+          };
+          return res.status(500).redirect('/add-vaccine');
+
+
+        
     }
   
  

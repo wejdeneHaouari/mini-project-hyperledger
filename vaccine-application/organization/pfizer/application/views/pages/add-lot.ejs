@@ -1,0 +1,115 @@
+<body>
+  <!-- Sidenav -->
+  <% include ../partials/sidebar %>
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Top navbar -->
+    <% include ../partials/navbar %>
+    <!-- Header -->
+    <% include ../partials/vaccine/header %>
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+      <div class="row">
+        
+        <div class="col-xl-8 order-xl-1">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">Add lot</h3>
+                </div>
+                <div class="col-4 text-right">
+                  <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+
+              <form action="/add-lot-info" method="POST">
+                <h6 class="heading-small text-muted mb-4">Lot information</h6>
+                <div class="pl-lg-4">
+                  <% if (locals.messages && messages.success) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      <%= messages.success %>
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+                  <% } %>
+                  <% if (locals.messages && messages.errors && messages.errors.databaseError) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      <%= messages.errors %>
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+                  <% } %>
+                
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-numero">numero</label>
+                        <input type="text" id="input-numero" class="form-control form-control-alternative" name="numero" placeholder="numero" >
+                        <% if (locals.messages && messages.errors && messages.errors.numero) { %>
+                          <strong class="invalid-feedback" style="display: block"><%= messages.errors.numero%></strong>
+                        <% } %>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-quantite">quantité</label>
+                        <input type="text" id="input-quantite" class="form-control form-control-alternative" name="quantite" placeholder="quantite" >
+                        <% if (locals.messages && messages.errors && messages.errors.quantite) { %>
+                          <strong class="invalid-feedback" style="display: block"><%= messages.errors.quantite %></strong>
+                        <% } %>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-vaccineRef">vaccine Reference</label>
+                        <input type="text" id="input-vaccineRef" class="form-control form-control-alternative" name="vaccineRef" placeholder="vaccine Reference" >
+                        <% if (locals.messages && messages.errors && messages.errors.vaccineRef) { %>
+                          <strong class="invalid-feedback" style="display: block"><%= messages.errors.vaccineRef %></strong>
+                        <% } %>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-fabricationDate"> fabrication Date</label>
+                        <input type="text" id="input-fabricationDate" class="form-control form-control-alternative" name="fabricationDate" placeholder="fabrication Date" >
+                        <% if (locals.messages && messages.errors && messages.errors.fabricationDate) { %>
+                          <strong class="invalid-feedback" style="display: block"><%= messages.errors.fabricationDate %></strong>
+                        <% } %>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-expirationDate"> expiration Date</label>
+                        <input type="text" id="input-expirationDate" class="form-control form-control-alternative" name="expirationDate" placeholder="expiration Date" >
+                        <% if (locals.messages && messages.errors && messages.errors.expirationDate) { %>
+                          <strong class="invalid-feedback" style="display: block"><%= messages.errors.expirationDate %></strong>
+                        <% } %>
+                      </div>
+                    </div>
+
+                   
+
+
+                    <div class="col-lg-12 text-center">
+                      <button class="btn btn-success mt-4 mb-4">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Footer -->
+      <% include ../partials/footer %>
+    </div>
+  </div>
+
+  <!-- Include scripts -->
+  <% include ../partials/scripts %>
+</body>
