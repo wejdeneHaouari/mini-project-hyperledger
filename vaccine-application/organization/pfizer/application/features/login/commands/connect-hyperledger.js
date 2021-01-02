@@ -4,7 +4,8 @@ const { UPDATE_INFO_SUCCESS_MESSAGE, UPDATE_INFO_ERROR_MESSAGE } = require('../c
 const fs = require('fs');
 const yaml = require('js-yaml');
 const { Wallets, Gateway } = require('fabric-network');
-const Vaccine = require('../../../contract/lib/vaccine.js');
+const Vaccine = require('../../../../contract/lib/vaccine.js');
+
 var contract;
 
 
@@ -34,14 +35,14 @@ exports.HPConnect = () => {
 }
 
 async function newContract(){
-    const wallet = await Wallets.newFileSystemWallet('./identity/user/james/wallet');
+    const wallet = await Wallets.newFileSystemWallet('../identity/user/james/wallet');
     const gateway = new Gateway();
     try {
 
     const userName = 'james';
 
        // Load connection profile; will be used to locate a gateway
-       let connectionProfile = yaml.safeLoad(fs.readFileSync('./gateway/connection-org2.yaml', 'utf8'));
+       let connectionProfile = yaml.safeLoad(fs.readFileSync('../gateway/connection-org2.yaml', 'utf8'));
 
        // Set connection options; identity and wallet
        let connectionOptions = {
@@ -63,7 +64,7 @@ async function newContract(){
        // Get addressability to  vaccine contract
        console.log('Use org.vaccinet.vaccine smart contract.');
 
-        contract = await network.getContract('vaccinevalidation');
+        contract = await network.getContract('vaccinecontract');
         return contract;
     }catch (error) {
        console.log(`Error processing transaction. ${error}`);
