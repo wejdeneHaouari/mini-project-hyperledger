@@ -51,9 +51,7 @@ async function addLot(req, res) {
         let lot = Lot.deserialize(issueResponse);
 
         console.log(`${lot.manufacturer}  lot : ${lot.reference} successfully added`);
-        console.log('Transaction complete.');
-     
-
+        
 
 
 
