@@ -493,7 +493,7 @@ Now that we have deployed the `vaccinecontract` chaincode to the channel, we can
 use the pfizer application to issue the vaccine. Let's take a
 moment to examine the application structure.
 
-## Script Client Applications 
+## Getting ready for Client Applications 
 
 ### Application structure
 
@@ -537,6 +537,7 @@ Change to the directory that contains pfizer's copy of the application
 (James)$ cd vaccine-application/organization/pfizer/application
 (James)$ code issue.js
 ```
+This scenario is to test our application before working on our web application 
 
 ### Application dependencies
 
@@ -564,7 +565,7 @@ Open the `package.json` file to see how `issue.js` identifies the packages to
 download and their exact versions by examining the "dependencies" section of the file.
 
 **npm** versioning is very powerful; you can read more about it
-[hise](https://docs.npmjs.com/getting-started/semantic-versioning).
+[here](https://docs.npmjs.com/getting-started/semantic-versioning).
 
 Let's install these packages with the `npm install` command -- this may take up
 to a minute to complete:
@@ -588,8 +589,8 @@ issue.js	      	package-lock.json
 ```
 
 Examine the `node_modules` directory to see the packages that have been
-installed. Thise are lots, because `js-yaml` and `fabric-network` are themselves
-built on othis npm packages! Helpfully, the `package-lock.json`
+installed. These are lots, because `js-yaml` and `fabric-network` are themselves
+built on othese npm packages! Helpfully, the `package-lock.json`
 [file](https://docs.npmjs.com/files/package-lock.json) identifies the exact
 versions installed, which can prove invaluable if you want to exactly reproduce
 environments; to test, diagnose problems or deliver proven applications for
@@ -671,129 +672,7 @@ In the file you can notice the following:
   certificate is distributed to the network so that different actors at different
   times can cryptographically verify information created by James's private key.
 
-## Issue application (pfizer)
-
-James can now use `issue.js` to submit a transaction that will issue
-pfizer  vaccine `00001`:
-
-```
-(James)$ node issue.js
-
-Connect to Fabric gateway.
-Use network channel: mychannel.
-Use org.vaccinet.vaccine smart contract.
-Submit  vaccine issue transaction.
-Process issue transaction response.{"class":"org.vaccinet.vaccine","key":"\"pfizer\":\"00001\"","currentState":1,"issuer":"pfizer","vaccineNumber":"00001","issueDateTime":"2020-05-31","composition":"XXX"}
-pfizer  vaccine : 00001 successfully issued for value 5000000
-Transaction complete.
-Disconnect from Fabric gateway.
-Issue program complete.
-```
-
-The `node` command initializes a Node.js environment, and runs `issue.js`. We
-can see from the program output that pfizer  vaccine 00001 was
-issued with a face value of 5M USD.
-
-As you've seen, to achieve this, the application invokes the `issue` transaction
-defined in the `vaccine` smart contract within `vaccinecontract.js`.
-The smart contract interacts with the ledger via the
-Fabric APIs, most notably `putState()` and `getState()`, to represent the new
- vaccine as a vector state within the world state. 
-
-All the time, the underlying Fabric SDK handles the transaction endorsement,
-ordering and notification process, making the application's logic
-straightforward; the SDK uses a [gateway](../developapps/gateway.html) to
-abstract away network details and
-[connectionOptions](../developapps/connectoptions.html) to declare more advanced
-processing strategies such as transaction retry.
-
-Let's now follow the lifecycle of pfizer 00001 by switching our emphasis
-to an employee of WHO, Jasmine, who will approve the  vaccine using a WHO application.
-
-## WHO applications
-
-Jasmine uses WHO's `approve` application to submit a transaction to the ledger
-which approves of the vaccine `00001` issued by pfizer. The `vaccine` smart contract is the same as that used by
-pfizer's application, however the transaction is different this time --
-it's `approve` rather than `issue`. Let's examine how WHO's application works.
-
-Open a separate terminal window for Jasmine. In `fabric-samples`, change to the
-WHO application directory that contains the application, `approve.js`, and open
-it with your editor:
-
-```
-(Jasmine)$ cd vaccine-application/organization/WHO/application/
-(Jasmine)$ code approve.js
-```
-
-### Run as WHO
-
-The WHO applications which approve and redeem  vaccine have a very
-similar structure to pfizer's issue application. Thisefore, let’s install
-their dependencies and set up Jasmine's wallet so that she can use these
-applications to approve and redeem  vaccine.
-
-Like pfizer, WHO must the install the required application packages
-using the ``npm install`` command, and again, this make take a short time to
-complete.
-
-In the WHO administrator window, install the application dependencies:
-
-```
-(WHO admin)$ cd vaccine-application/organization/WHO/application/
-(WHO admin)$ npm install
-
-(            ) extract:lodash: sill extract ansi-styles@3.2.1
-(...)
-added 738 packages in 46.701s
-```
-
-In Jasmine's command window, run the `enrollUser.js` program to generate a
-certificate and private key and them to his wallet:
-```
-(Jasmine)$ node enrollUser.js
-
-Wallet path: /Users/nikhilgupta/fabric-samples/vaccine-application/organization/WHO/identity/user/Jasmine/wallet
-Successfully enrolled client user "Jasmine" and imported it into the wallet
-```
-
-The `addToWallet.js` program has added identity information for `Jasmine`, to her
-wallet, which will be used by `approve.js` to submit transactions to
-`vaccinet`.
-
-Like James, Jasmine can store multiple identities in her wallet, though in our
-example, he only uses one. His corresponding id file at
-`WHO/identity/user/Jasmine/wallet/Jasmine.id` is very similar James's ---
-feel free to examine it.
-
-### approve application
-
-Jasmine can now use `approve.js` to submit a transaction that will transfer ownership
-of pfizer  vaccine 00001 to WHO.
-
-Run the `approve` application in Jasmine's window:
-
-```
-(Jasmine)$ node approve.js
-
-Connect to Fabric gateway.
-Use network channel: mychannel.
-Use org.vaccinet.vaccine smart contract.
-Submit  vaccine approve transaction.
-Process approve transaction response.
-pfizer  vaccine : 00001 successfully purchased by WHO
-Transaction complete.
-Disconnect from Fabric gateway.
-approve program complete.
-```
-
-You can see the program output that pfizer  vaccine 00001 was
-successfully purchased by Jasmine on behalf of WHO. `approve.js` invoked the
-`approve` transaction defined in the `vaccine` smart contract which updated
- vaccine `00001` within the world state using the `putState()` and
-`getState()` Fabric APIs. As you've seen, the application logic to approve and issue
- vaccine is very similar, as is the smart contract logic.
-
+Once the wallet was created and the smart contract tested with a simple script, the next step is the web application development.
 
 ## WEB Client Applications
 
@@ -829,16 +708,16 @@ successfully purchased by Jasmine on behalf of WHO. `approve.js` invoked the
 ###### **For PostgreSQL connection:**
 1. Database connection via URL
 ```bash
-DATABASE_URL=http://creativeTim:creativeTim@127.0.0.1:5432/creativeTim
+DATABASE_URL=http://admin:admin@127.0.0.1:5432/admin
 # Example: DATABASE_URL=http://<user>:<password>@<host>/<database_name>
 ```
 2. Database connection via credentials
 ```bash
 DATABASE_HOST=127.0.0.1
 DATABASE_PORT=5432
-DATABASE_NAME=creativeTim
-DATABASE_USER=creativeTim
-DATABASE_PASSWORD=creativeTim
+DATABASE_NAME=admin
+DATABASE_USER=admin
+DATABASE_PASSWORD=admin
 ```
 
 ######  **For Redis connection:**
