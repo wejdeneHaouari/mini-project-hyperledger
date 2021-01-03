@@ -14,7 +14,7 @@ The goal of our project is to design and develop a decentralized solution that a
 We will use the blockchain technology to ensure these goals below:
   * When adding a vaccine, validation of the vaccine by a health authority will be carried out to prevent any type of falsification. 
     
-  * Any user can check whether the vaccine has been validated or not at any time.
+  * Any user can check whethis the vaccine has been validated or not at any time.
     
   * Any user can know all the details about the vaccine (date of manufacture, manufacturer, ...)
   
@@ -38,7 +38,7 @@ We will use the blockchain technology to ensure these goals below:
 
 ![](img/scenario.jpg)
 
-In this tutorial two organizations, pfizer and WHO, exchange vaccine information with each other on 'Vaccinet', the marketplace represented by a Hyperledger Fabric blockchain network. 
+In this tutorial two organizations, pfizer and WHO, exchange vaccine information with each othis on 'Vaccinet', the marketplace represented by a Hyperledger Fabric blockchain network. 
 
 Client applications (CLI based) are used: 
 
@@ -46,7 +46,7 @@ Client applications (CLI based) are used:
 - run queries (Node.js sample only)
 - examine the transaction inputs (as opposed to _states_) that are written to the ledger after you perform a transaction (using the Node.js listener).
 
-This sample uses the `test-network` . You’ll act as Isabella, an employee of pfizer (Org2), who will issue a vaccine on its behalf. You’ll then 'switch hats' to take the role of Balaji, an employee of WHO (Org1), who will validate this vaccine, hold it for a period of time, and then redeem it with pfizer for a small profit or yield. Note that the smart contract sample doesn't enforce the actual hold period ; the user can, in fact, redeem the paper immediately. 
+This sample uses the `test-network` . You’ll act as James, an employee of pfizer (Org2), who will issue a vaccine on its behalf. You’ll then 'switch hats' to take the role of Jasmine, an employee of WHO (Org1), who will validate this vaccine, hold it for a period of time, and then redeem it with pfizer for a small profit or yield. Note that the smart contract sample doesn't enforce the actual hold period ; the user can, in fact, redeem the vaccine immediately. 
 
 ## Quick Start
 
@@ -76,8 +76,6 @@ A machine with the following is needed
 
 - Docker and docker-compose installed
 - Node.js v12 if you want to run JavaScript client applications
-- Java v8 if you want to run Java client applications
-- Maven to build the Java applications
 
 You will need to install the `peer` cli binaries and cloned the `fabric-samples` repository. Once you have installed the cli binaries, ensure you have added the  `bin` directory (for your `peer` commands used by scripts below) to your exported `PATH` variable in your `.bashrc` or `.profile` directory (per below). This is important as you will be opening a number of windows which will need PATH set. Finally, check that it finds the `peer` command in your PATH using the `which` command  eg.
 
@@ -270,7 +268,7 @@ Note that you can pass a port number to the above command if the default port in
 ```
 
 This window will now show output from the Docker containers for the remainder of the
-tutorial, so go ahead and open another command window. The next thing we will do is
+tutorial, so go ahead and open anothis command window. The next thing we will do is
 examine the smart contract that pfizer will use to issue to the vaccine.
 
 ## Examine the vaccine smart contract
@@ -292,7 +290,7 @@ You can then view the smart contract in the `contract` directory using your chos
 In the `lib` directory of the folder, you'll see `vaccinecontract.js` file -- this
 contains the vaccine smart contract!
 
-![commercialpaper.vscode1](img/smart_contract.png) *An
+![vaccine.vscode1](img/smart_contract.png) *An
 example code editor displaying the vaccine smart contract in `vaccinecontract.js`*
 
 `vaccinecontract.js` is a JavaScript program designed to run in the Node.js environment. Note the following key program lines:
@@ -315,7 +313,7 @@ example code editor displaying the vaccine smart contract in `vaccinecontract.js
 * `async issue(ctx, manufacturer, reference , composition) {`
 
   This method defines the vaccine `issue` transaction for Vaccinet. The parameters that are passed to this method will be used to issue the new vaccine.
-  Other code details can be found under the contract folder of each organization.
+  Othis code details can be found under the contract folder of each organization.
 
 ## Deploy the smart contract to the channel
 
@@ -415,7 +413,7 @@ approving the `vaccinecontract` chaincode without the ``--policy`` flag, the
 pfizer admin agrees to using the channel's default `Endorsement` policy,
 which in the case of the `mychannel` test channel requires a
 majority of organizations on the channel to endorse a transaction. All transactions,
-whether valid or invalid, will be recorded on the [ledger blockchain](../ledger/ledger.html#blockchain),
+whethis valid or invalid, will be recorded on the [ledger blockchain](../ledger/ledger.html#blockchain),
 but only valid transactions will update the [world state](../ledger/ledger.html#world-state).
 
 ### Install and approve the smart contract as WHO
@@ -466,8 +464,8 @@ The WHO admin can now approve the chaincode definition of `vaccinecontract`:
 Now that WHO and pfizer have both approved the `Vaccinet` chaincode, we
 have the majority we need (2 out of 2) to commit the chaincode definition to the
 channel. Once the chaincode is successfully defined on the channel, the
-`CommercialPaper` smart contract inside the `vaccinecontract` chaincode can be
-invoked by client applications on the channel. Since either organization can
+`vaccine` smart contract inside the `vaccinecontract` chaincode can be
+invoked by client applications on the channel. Since eithis organization can
 commit the chaincode to the channel, we will continue operating as the
 WHO admin.
 
@@ -495,78 +493,300 @@ Now that we have deployed the `vaccinecontract` chaincode to the channel, we can
 use the pfizer application to issue the vaccine. Let's take a
 moment to examine the application structure.
 
-## Client Applications
+## Getting ready for Client Applications 
 
-Note for JavaScript applications, you will need to install the dependencies first. Use this command in each application directory
+### Application structure
 
-```
-npm install
-```
+The smart contract contained in `vaccinecontract` is called by pfizer's
+application `issue.js`. James uses this application to submit a transaction
+to the ledger which issues  vaccine `00001`. Let's quickly examine how
+the `issue` application works.
 
-The docker containers don't contain the node runtime; so it is best to exit the docker containers - but keep the windows open and run the applications locally.
 
-As mentioned earlier in the Sample introduction section, transaction _inputs_ are recorded on the ledger, as well as any asset _state_ changes. Just *before* you run the _issue_ application script below - you need to launch a block 'listener' application that will show you these _inputs_, as you complete each transaction in the vaccine verification lifecycle (eg. vaccine Number: 00001, 00002 etc) . 
+Because the `issue` application submits transactions on behalf of James, it
+starts by retrieving James's X.509 certificate from his
+[wallet](../developapps/wallet.html), which might be stored on the local file
+system or a Hardware Security Module
+[HSM](https://en.wikipedia.org/wiki/Hardware_security_module). The `issue`
+application is then able to utilize the gateway to submit transactions on the
+channel. The Hyperledger Fabric SDK provides a
+[gateway](../developapps/gateway.html) abstraction so that applications can
+focus on application logic while delegating network interaction to the
+gateway. Gateways and wallets make it straightforward to write Hyperledger
+Fabric applications.
 
-For the listener, its best to open a *new* terminal for this in the `vaccine-verification/organization/pfizer/application` directory (javascript). Next, run the `addToWallet` step in the `add` transaction below, to add Isabella's identity to the wallet - the listener will use this wallet. Once the listener is launched, it will show the inputs for transactions you will perform and which are committed to blocks (ie part of the ledger).  Note: initially, the listener may show a spurious message, and then go into a _listening_ or 'wait' state. As transactions complete below, messages will be displayed by the listener - so keep an eye out. *After* adding Isabella's wallet, you can then launch the listener as follows:
-
-```
-node cpListener.js
-```
-
-**<details><summary>Add the vaccine</summary>**
-
-The vaccine is Added by *pfizer* 
-
-You can now run the applications to add the vaccine. Change to the `vaccine-verification/organization/pfizer/application` directory
-
-*Add the Identity to be used to the wallet*
-
-```
-node addToWallet.js
-```
-
-*Add the vaccine*
+So let's examine the `issue` application that James is going to use. Open a
+separate terminal window for him, and in `fabric-samples` locate the pfizer
+`/application` folder:
 
 ```
-node addVaccine.js
+(James)$ cd vaccine-application/organization/pfizer/application/
+(James)$ ls
+
+addToWallet.js		enrollUser.js		issue.js		package.json
 ```
 
-Don't forget to check the application listener for messages above!
+`addToWallet.js` is the program that James is going to use to load his
+identity into his wallet, and `issue.js` will use this identity to create
+ vaccine `00001` on behalf of pfizer by invoking `vaccinecontract`.
 
-</p>
-</details>
-
-
-**<details><summary>validate the vaccine</summary>**
-
-_validate_ is performed as *WHO*; 
-
-You can now run the applications to validate the paper. Change to either the
-`vaccine-verification/organization/WHO/application` directory or  `vaccine-verification/organization/WHO/application-java`
-
-*Add the Identity to be used*
+Change to the directory that contains pfizer's copy of the application
+`issue.js`, and use your code editor to examine it:
 
 ```
-node addToWallet.js
+(James)$ cd vaccine-application/organization/pfizer/application
+(James)$ code issue.js
+```
+This scenario is to test our application before working on our web application 
+
+### Application dependencies
+
+The `issue.js` application is written in JavaScript and designed to run in the
+Node.js environment that acts as a client to the vaccinet network.
+As is common practice, pfizer's application is built on many
+external node packages --- to improve quality and speed of development. Consider
+how `issue.js` includes the `js-yaml`
+[package](https://www.npmjs.com/package/js-yaml) to process the YAML gateway
+connection profile, or the `fabric-network`
+[package](https://www.npmjs.com/package/fabric-network) to access the `Gateway`
+and `Wallet` classes:
+
+```JavaScript
+const yaml = require('js-yaml');
+const { Wallets, Gateway } = require('fabric-network');
 ```
 
-*validate the paper*
+These packages have to be downloaded from [npm](https://www.npmjs.com/) to the
+local file system using the `npm install` command. By convention, packages must
+be installed into an application-relative `/node_modules` directory for use at
+runtime.
+
+Open the `package.json` file to see how `issue.js` identifies the packages to
+download and their exact versions by examining the "dependencies" section of the file.
+
+**npm** versioning is very powerful; you can read more about it
+[here](https://docs.npmjs.com/getting-started/semantic-versioning).
+
+Let's install these packages with the `npm install` command -- this may take up
+to a minute to complete:
 
 ```
-node validate.js
+(James)$ cd vaccine-application/organization/pfizer/application/
+(James)$ npm install
+
+(           ) extract:lodash: sill extract ansi-styles@3.2.1
+(...)
+added 738 packages in 46.701s
 ```
 
-</p>
-</details>
+See how this command has updated the directory:
+
+```
+(James)$ ls
+
+enrollUser.js 		node_modules	      	package.json
+issue.js	      	package-lock.json
+```
+
+Examine the `node_modules` directory to see the packages that have been
+installed. These are lots, because `js-yaml` and `fabric-network` are themselves
+built on othese npm packages! Helpfully, the `package-lock.json`
+[file](https://docs.npmjs.com/files/package-lock.json) identifies the exact
+versions installed, which can prove invaluable if you want to exactly reproduce
+environments; to test, diagnose problems or deliver proven applications for
+example.
+
+## Wallet
+
+James is almost ready to run `issue.js` to issue pfizer  vaccine
+`00001`; thise's just one remaining task to perform! As `issue.js` acts on
+behalf of James, and thisefore pfizer, it will use identity from him
+[wallet](../developapps/wallet.html) that reflects these facts. We now need to
+perform this one-time activity of generating the appropriate X.509 credentials
+to his wallet.
+
+The pfizer Certificate Authority running on vaccinet, `ca_org2`, has an
+application user that was registered when the network was deployed. James
+can use the identity name and secret to generate the X.509 cryptographic material
+for the `issue.js` application. The process of using a CA to generate client side
+cryptographic material is referred to as **enrollment**. In a real word scenario,
+a network operator would provide the name and secret of a client identity that
+was registered with the CA to an application developer. The developer would then
+use the credentials to enroll their application and interact with the network.
+
+The `enrollUser.js` program uses the `fabric-ca-client` class to generate a private
+and public key pair, and then issues a **Certificate Signing Request** to the CA.
+If the identiy name and secret submitted by James match the credentials
+registered with the CA, the CA will issue and sign a certificate that encodes the
+public key, establishing that James belongs to pfizer. When the signing
+request is complete, `enrollUser.js` stores the private key and signing certificate
+in James's wallet. You can examine the `enrollUser.js` file to learn more about
+how the Node SDK uses the `fabric-ca-client` class to complete these tasks.
+
+In James's terminal window, run the `enrollUser.js` program to add identity
+information to his wallet:
+
+```
+(James)$ node enrollUser.js
+
+Wallet path: /Users/nikhilgupta/fabric-samples/vaccine-application/organization/pfizer/identity/user/James/wallet
+Successfully enrolled client user "James" and imported it into the wallet
+```
+
+We can now turn our focus to the result of this program --- the contents of the
+wallet which will be used to submit transactions to vaccinet:
+
+```
+(James)$ ls ../identity/user/James/wallet/
+
+James.id
+```
+
+James can store multiple identities in his wallet, though in our example, she
+only uses one. The `wallet` folder contains an `James.id` file that provides
+the information that James needs to connect to the network. Othis identities
+used by James would have their own file. You can open this file to see the
+identity information that `issue.js` will use on behalf of James inside a JSON
+file. The output has been formatted for clarity.
+```
+(James)$  cat ../identity/user/James/wallet/*
+
+{
+  "credentials": {
+    "certificate": "-----BEGIN CERTIFICATE-----\nMIICKTCCAdCgAwIBAgIQWKwvLG+sqeO3LwwQK6avZDAKBggqhkjOPQQDAjBzMQsw\nCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\nYW5jaXNjbzEZMBcGA1UEChMQb3JnMi5leGFtcGxlLmNvbTEcMBoGA1UEAxMTY2Eu\nb3JnMi5leGFtcGxlLmNvbTAeFw0yMDAyMDQxOTA5MDBaFw0zMDAyMDExOTA5MDBa\nMGwxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1T\nYW4gRnJhbmNpc2NvMQ8wDQYDVQQLEwZjbGllbnQxHzAdBgNVBAMMFlVzZXIxQG9y\nZzIuZXhhbXBsZS5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAT4TnTblx0k\ngfqX+NN7F76Me33VTq3K2NUWZRreoJzq6bAuvdDR+iFvVPKXbdORnVvRSATcXsYl\nt20yU7n/53dbo00wSzAOBgNVHQ8BAf8EBAMCB4AwDAYDVR0TAQH/BAIwADArBgNV\nHSMEJDAigCDOCdm4irsZFU3D6Hak4+84QRg1N43iwg8w1V6DRhgLyDAKBggqhkjO\nPQQDAgNHADBEAiBhzKix1KJcapprove9ey5ulWHRUMbqdVCNHe/mRtUdaJagIgIgYpbZ\nXf0CSiTXIWOJIsswN4Jp+ZxkJfFVmXndqKqz+VM=\n-----END CERTIFICATE-----\n",
+    "privateKey": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQggs55vQg2oXi8gNi8\nNidE8Fy5zenohArDq3FGJD8cKU2hRANCAAT4TnTblx0kgfqX+NN7F76Me33VTq3K\n2NUWZRreoJzq6bAuvdDR+iFvVPKXbdORnVvRSATcXsYlt20yU7n/53db\n-----END PRIVATE KEY-----\n"
+  },
+  "mspId": "Org2MSP",
+  "type": "X.509",
+  "version": 1
+}
+```
+
+In the file you can notice the following:
+
+* a `"privateKey":` used to sign transactions on James's behalf, but not
+  distributed outside of his immediate control.
+
+* a `"certificate":` which contains James's public key and othis X.509
+  attributes added by the Certificate Authority at certificate creation. This
+  certificate is distributed to the network so that different actors at different
+  times can cryptographically verify information created by James's private key.
+
+Once the wallet was created and the smart contract tested with a simple script, the next step is the web application development.
+
+## WEB Client Applications
+
+![Product Image](https://s3.amazonaws.com/creativetim_bucket/products/148/original/opt_ad_node_thumbnail.jpg)
 
 
-When you're done with this section, return to the terminal where your Node.js _listener_ application is running, and terminate the process.
+
+### Installation
+
+1. You need `Node.js` (at least 10.x version) installed on your machine, if you don't have it, you should install it - download [link](https://nodejs.org/en/download/)
+2. [Clone the project from github](https://github.com/creativetimofficial/argon-dashboard-nodejs) or [download the archive](https://github.com/creativetimofficial/argon-dashboard-nodejs)
+3. `cd` to your downloaded Argon app
+4. Install necessary dependencies:
+    - **Via node `npm` package manager** - Run `npm install` on the project root
+    - **Via `yarn` package manager** - Run `yarn install` on the project root
+
+### Configuration for PostgreSQL database and Redis data structure store
+
+##### Via Docker
+
+1. Install **Docker** on your machine
+2. Run `docker-compose up -d` in a terminal on the project root. This will start 3 containers:
+    - database(PostgreSQL) container;
+    - redis container - required for session management;
+    - haproxy container - required only for a staging/production setup;
+
+##### Via another chosen solution.
+
+1. Install your **PostgreSQL** database
+2. Install your **Redis** server
+3. Change connection configuration, from your root `cd` to `env-files` folder and change the following configurations with your own:
+
+###### **For PostgreSQL connection:**
+1. Database connection via URL
+```bash
+DATABASE_URL=http://admin:admin@127.0.0.1:5432/admin
+# Example: DATABASE_URL=http://<user>:<password>@<host>/<database_name>
+```
+2. Database connection via credentials
+```bash
+DATABASE_HOST=127.0.0.1
+DATABASE_PORT=5432
+DATABASE_NAME=admin
+DATABASE_USER=admin
+DATABASE_PASSWORD=admin
+```
+
+######  **For Redis connection:**
+1. REDIS connection via URL
+```bash
+REDIS_URL=redis://:@127.0.0.1:6379
+# Example: redis://:<password>@<host>:<port>
+```
+2. REDIS connection via credentials
+```bash
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=
+```
+
+## Migrations and seeds
+
+1. For database tables structure, in the project root run: `npm run knex migrate:latest` or `yarn knex migrate:latest` if you are using `yarn` as the default package manager
+2. To create a default user, run: `npm run knex seed:run` or `yarn knex seed:run` if you are using `yarn` as the default package manager
+
+## Run the application
+
+1. For starting the application, the following script (defined in `package.json` under `scripts`) must be called:
+    - via **npm**: `npm run start` or `npm run dev` for starting the development environment, which has livereload enabled;
+    - via **yarn**: `yarn start` or `yarn dev` for starting the development environment, which has livereload enabled;
+
 
 ## Clean up
-When you are finished using the Fabric test network and the vaccine smart contract and applications, you can use the following command to clean up the network:
 
+you can use a provided script
+to clean up your environment. Use a command window to navigate back to the root
+directory of the  vaccine sample:
 ```
-./network-clean.sh 
+cd fabric-samples/vaccine-application
 ```
+You can then bring down the network with the following command:
+```
+./network-clean.sh
+```
+This command will bring down the peers, CouchDB containers, and ordering node of the network, in addition to the logspout tool. It will also remove the identities that we created for James and Jasmine. Note that all of the data on the ledger will be lost. If you want to go through the tutorial again, you will start from a clean initial state.
 
 <sup>[_back to top_](#top)</sup>
+
+
+## Trouble shooting
+
+### Hyperledger Fabric `1.4`
+
+ A problem with 1.4 fabric version was found during the development of the front end. The generated node modules was too large that the application couldn't be launched.
+
+&rarr; migrated the latest version 2.4 as it doesn't have the same problem.
+
+### Hyperledger Fabric `2.4`
+
+A problem with 2.4 fabric version was found during the preparations of the infrastructure. The orderer latest version couldn't be retrieved.
+
+&rarr; downgrading to the previous version 2.3
+
+### Hyperledger Fabric `2.3`
+
+The docker environment wasn't stable. Some containers weren' up when starting the network.
+&rarr; working on seperate virtual machine `ubuntu-v20.08`
+
+### GetStateByRange()
+
+In previous versions of Fabric, getStateByRange API used to return composite keys even when doing a range query on simple keys.
+Thise was no way for Fabric to differentiate between a simple or composite so that GetStateByRange() could return only simple keys.
+
+Composite keys have an objectType prefix. Each part of composite key is delimited by null character for example chaincodeid 0x00 objectType 0x00 ck1 0x00 ck2 0x00. This design ensured that various composite key types have an objectType namespace to guarantee no collisions across types. You can check this yourself by hovering over copy icon on any *CouchDB* record which have a composite key like in the image below.
+Now, getStateByRange() returns only simple keys and getStateByPartialCompositeKey() returns only composite keys. The namespaces for simple keys and composite keys are different to avoid collisions.
+
+&rarr; Not using getStateByRange API, but getStateByPartialCompositeKey to fetch records which have composite keys was the solution implemented.
