@@ -9,7 +9,7 @@ async function addVaccine(req, res) {
 
     let user = {};
     let owner = "pfizer";
-    let nameVaccine, ref, composition;
+    let nameVaccine, ref, composition, issueDateTime;
     const {
       user: { id },
     } = req;
@@ -19,10 +19,11 @@ async function addVaccine(req, res) {
          nameVaccine = req.body.name;
          ref = req.body.reference;
          composition = req.body.composition;
+         issueDateTime = req.body.issueDateTime;
     }else{
        
         req.session.messages = {
-            errors: { inputError: "invalid input" },
+            errors: "invalid input" 
           };
           return res.status(500).redirect('/add-vaccine');
     }
@@ -37,7 +38,7 @@ async function addVaccine(req, res) {
         console.log('Submit vaccine issue transaction.');
        
        const issueResponse = await contract.submitTransaction('issue',
-       'pfizer', '001','covid','2/1/2020','test');
+       owner, ref, nameVaccine,issueDateTime,composition);
         
 
          //const issueResponse = await contract.submitTransaction('queryHistory',
@@ -49,7 +50,7 @@ async function addVaccine(req, res) {
         let vaccine = Vaccine.fromBuffer(issueResponse);
 
         console.log(`${vaccine.manufacturer}  vaccine : ${vaccine.reference} successfully issued`);
-       console.log('Transaction complete.');
+        console.log('Transaction complete.');
      
         // 1 asset history
         console.log('1. Query Commercial Paper History....');
@@ -66,11 +67,9 @@ async function addVaccine(req, res) {
 
 
     } catch (error) {
-        console.log(`Error processing transaction. ${error}`);
-        console.log(error.stack);
-        req.session.messages = {
-            errors: { internalServerError: error.stack },
-          };
+        console.log(`Error processing transaction. ${error.stack}`);
+        
+        req.session.messages = { errors: `Error processing transaction. ${error.stack}`};
           return res.status(500).redirect('/add-vaccine');
 
 

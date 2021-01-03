@@ -36,7 +36,7 @@
                       </button>
                     </div>
                   <% } %>
-                  <% if (locals.messages && messages.errors && messages.errors.databaseError) { %>
+                  <% if (locals.messages && messages.errors ) { %>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                       <%= messages.errors %>
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -60,6 +60,15 @@
                         <input type="text" id="input-name" class="form-control form-control-alternative" name="reference" placeholder="Reference" >
                         <% if (locals.messages && messages.errors && messages.errors.reference) { %>
                           <strong class="invalid-feedback" style="display: block"><%= messages.errors.reference %></strong>
+                        <% } %>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-issueDateTime">Issue date</label>
+                        <input type="text" id="input-issueDateTime" class="form-control form-control-alternative" name="issueDateTime" placeholder="issue Date" >
+                        <% if (locals.messages && messages.errors && messages.errors.issueDateTime) { %>
+                          <strong class="invalid-feedback" style="display: block"><%= messages.errors.issueDateTime%></strong>
                         <% } %>
                       </div>
                     </div>
