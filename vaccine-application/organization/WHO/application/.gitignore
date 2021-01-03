@@ -1,0 +1,32 @@
+/node_modules
+yarn.lock
+yarn-error.log
+.vscode
+/dist
+public/css/*.min.css
+public/js/*.min.js
+package-lock.json
+**/cp.tar.gz
+**/.gradle
+**/gateway/connection-org1.yaml
+**/gateway/connection-org2.yaml
+# Emacs backup files
+*~
+*#
+.#*
+# Vim file artifacts
+.*.sw*
+# installed platform-specific binaries
+**/bin
+**/config
+.DS_Store
+.project
+# omit Go vendor directories
+vendor/
+.vscode
+.gradle
+.idea
+# Dependency directories
+node_modules/
+# Ignore Gradle build output directory
+build
