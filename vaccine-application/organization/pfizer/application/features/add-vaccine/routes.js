@@ -9,6 +9,6 @@ module.exports = (router, middlewares = []) => {
   router.get('/add-vaccine', middlewares.map(middleware => wrap(middleware)), wrap(loadPage));
 
   router.post('/update-vaccine-info', wrap(requestBodyValidation), wrap(updateUserInfo));
- router.post('/add-vaccine-info', wrap(addVaccineInfo));
+  router.post('/add-vaccine-info', wrap(addVaccineInfo));
   return router;
 };

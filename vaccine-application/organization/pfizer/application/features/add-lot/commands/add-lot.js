@@ -48,7 +48,7 @@ async function addLot(req, res) {
         // process response
         console.log('Process add lot transaction response.'+issueResponse);
 
-        let lot = Lot.fromBuffer(issueResponse);
+        let lot = Lot.deserialize(issueResponse);
 
         console.log(`${lot.manufacturer}  lot : ${lot.reference} successfully added`);
         console.log('Transaction complete.');
