@@ -6,32 +6,36 @@
 
 'use strict';
 
-const State = require('./../ledger-api/state.js');
+// Utility class for ledger state
+const State = require('../ledger-api/state.js');
 
-
+// Enumerate commercial vaccine state values
 const cpState = {
     PENDING: 1,
     APPROVED: 2,
     DECLINED: 3
 };
 
-
+/**
+ * Vaccine class extends State class
+ * Class will be used by application and smart contract to define a vaccine
+ */
 class Vaccine extends State {
 
     constructor(obj) {
-        super(Vaccine.getClass(), [obj.reference]);
+        super(Vaccine.getClass(), [obj.issuer, obj.reference]);
         Object.assign(this, obj);
     }
 
     /**
      * Basic getters and setters
     */
-    getName() {
-        return this.name;
+    getIssuer() {
+        return this.issuer;
     }
 
-    setName(newName) {
-        this.name = newName;
+    setIssuer(newIssuer) {
+        this.issuer = newIssuer;
     }
 
     setOwnerMSP(mspid) {
@@ -42,6 +46,10 @@ class Vaccine extends State {
         return this.mspid;
     }
 
+
+    /**
+     * Useful methods to encapsulate commercial vaccine states
+     */
     setApprouved() {
         this.currentState = cpState.APPROVED;
     }
@@ -79,7 +87,7 @@ class Vaccine extends State {
     }
 
     /**
-     * Deserialize a state data to vaccine
+     * Deserialize a state data to commercial vaccine
      * @param {Buffer} data to form back into the object
      */
     static deserialize(data) {
@@ -87,11 +95,12 @@ class Vaccine extends State {
     }
 
     /**
-     * Factory method to create a vaccine object
+     * Factory method to create a commercial vaccine object
      */
-    static createInstance(name, reference, issueDateTime, composition ) {
-        return new Vaccine({name, reference, issueDateTime, composition });
+    static createInstance( issuer, reference, name, issueDateTime, composition) {
+        return new Vaccine({ issuer, reference, name, issueDateTime, composition });
     }
+    
 
     static getClass() {
         return 'org.vaccinet.vaccine';

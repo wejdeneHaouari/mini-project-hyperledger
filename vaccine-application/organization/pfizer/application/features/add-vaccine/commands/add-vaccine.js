@@ -8,6 +8,7 @@ const connectionHP = require('../../login/commands/connect-hyperledger.js')
 async function addVaccine(req, res) {
 
     let user = {};
+    let owner = "pfizer";
     let nameVaccine, ref, composition;
     const {
       user: { id },
@@ -34,9 +35,10 @@ async function addVaccine(req, res) {
        
          // issue  vaccine
         console.log('Submit vaccine issue transaction.');
-        console.log("var: ", nameVaccine, ref, composition)
-        const issueResponse = await contract.submitTransaction('issue',
-         nameVaccine, ref, composition);
+       
+       const issueResponse = await contract.submitTransaction('issue',
+       'pfizer', '001','covid','2/1/2020','test');
+        
 
          //const issueResponse = await contract.submitTransaction('queryHistory',
          // '00004');
@@ -47,8 +49,18 @@ async function addVaccine(req, res) {
         let vaccine = Vaccine.fromBuffer(issueResponse);
 
         console.log(`${vaccine.manufacturer}  vaccine : ${vaccine.reference} successfully issued`);
-        console.log('Transaction complete.');
+       console.log('Transaction complete.');
      
+        // 1 asset history
+        console.log('1. Query Commercial Paper History....');
+        console.log('-----------------------------------------------------------------------------------------\n');
+        //let queryResponse = await contract.evaluateTransaction('queryAllVaccine', true,  "\x00", "" );
+        let queryResponse = await contract.evaluateTransaction('queryPartialVaccine', 'pfizer' );
+        let json = JSON.parse(queryResponse.toString());
+        console.log(json);
+        console.log('\n\n');
+        console.log('\n  History query complete.');
+        console.log('-----------------------------------------------------------------------------------------\n\n');
 
 
 

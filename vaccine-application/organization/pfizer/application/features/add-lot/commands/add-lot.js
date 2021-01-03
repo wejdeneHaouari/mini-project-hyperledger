@@ -10,6 +10,7 @@ async function addLot(req, res) {
     let user = {};
    
     let numero, quantite, vaccineRef, fabricationDate, expirationDate;
+    let owner = "pfizer";
     const {
       user: { id },
     } = req;
@@ -39,7 +40,7 @@ async function addLot(req, res) {
         console.log('Submit lot add transaction.');
       
         const issueResponse = await contract.submitTransaction('addLot',
-        numero, quantite, vaccineRef, fabricationDate, expirationDate);
+        numero, quantite, vaccineRef, fabricationDate, expirationDate, owner);
 
          //const issueResponse = await contract.submitTransaction('queryHistory',
          // '00004');

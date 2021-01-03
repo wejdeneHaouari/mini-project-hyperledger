@@ -6,29 +6,32 @@
 
 'use strict';
 
-const State = require('./../ledger-api/state.js');
+// Utility class for ledger state
+const State = require('../ledger-api/state.js');
 
 
 
-
+/**
+ * Lot class extends State class
+ * Class will be used by application and smart contract to define a lot
+ */
 class Lot extends State {
 
     constructor(obj) {
-        super(Lot.getClass(), [obj.reference]);
+        super(Lot.getClass(), [obj.issuer, obj.reference]);
         Object.assign(this, obj);
     }
 
     /**
      * Basic getters and setters
     */
-    getNumero() {
-        return this.numero;
+    getIssuer() {
+        return this.issuer;
     }
 
-    setNumero(newNumero) {
-        this.numero = newNumero;
+    setIssuer(newIssuer) {
+        this.issuer = newIssuer;
     }
-
 
     setOwnerMSP(mspid) {
         this.mspid = mspid;
@@ -38,18 +41,12 @@ class Lot extends State {
         return this.mspid;
     }
 
-    
-
-    static fromBuffer(buffer) {
-        return Lot.deserialize(buffer);
-    }
-
     toBuffer() {
         return Buffer.from(JSON.stringify(this));
     }
 
     /**
-     * Deserialize a state data to lot
+     * Deserialize a state data to commercial lot
      * @param {Buffer} data to form back into the object
      */
     static deserialize(data) {
@@ -57,11 +54,12 @@ class Lot extends State {
     }
 
     /**
-     * Factory method to create a lot object
+     * Factory method to create a commercial lot object
      */
-    static createInstance(numero, quantité, vaccineRef, fabricationDate, expirationDate ) {
-        return new Lot({numero, quantité, vaccineRef, fabricationDate, expirationDate });
+    static createInstance( issuer, reference, quantité, vaccineRef, fabricationDate, expirationDate ) {
+        return new Lot({  issuer, reference, quantité, vaccineRef, fabricationDate, expirationDate });
     }
+    
 
     static getClass() {
         return 'org.vaccinet.lot';

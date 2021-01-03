@@ -9,7 +9,7 @@ const mountResetPasswordRoutes = require('../features/reset-password/routes');
 const mountProfileRoutes = require('../features/profile/routes');
 const mountVaccineRoutes = require('../features/add-vaccine/routes');
 const mountLotRoutes = require('../features/add-lot/routes');
-
+const listVaccineRoutes = require('../features/list-vaccine/routes');
 function isAuthenticated(req, res, next) {
   if (req.user && req.isAuthenticated()) {
     return next();
@@ -42,4 +42,5 @@ mountResetPasswordRoutes(router);
 mountProfileRoutes(router, [isAuthenticated]);
 mountVaccineRoutes(router, [isAuthenticated]);
 mountLotRoutes(router,[isAuthenticated])
+listVaccineRoutes(router,[isAuthenticated])
 module.exports = router;

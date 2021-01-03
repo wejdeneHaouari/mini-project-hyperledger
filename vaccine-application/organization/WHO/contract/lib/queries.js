@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 'use strict';
 
 const State = require('../ledger-api/state.js');
-//const CommercialPaper = require('./paper.js');
+
 /**
  * Query Class for query functions such as history etc
  *
@@ -22,13 +22,13 @@ class QueryUtils {
     // getAssetHistory takes the composite key as arg, gets returns results as JSON to 'main contract'
     // =========================================================================================
     /**
-    * Get Asset History for a commercial paper
-   
-    * @param {String} reference commercial paper number
+    * Get Asset History for a vaccine
+    * @param {String} issuer the CP issuer
+    * @param {String} reference vaccine number
     */
-    async getAssetHistory( reference) {
+    async getAssetHistory(issuer, reference) {
 
-        let ledgerKey = await this.ctx.stub.createCompositeKey(this.name, [reference]);
+        let ledgerKey = await this.ctx.stub.createCompositeKey(this.name, [issuer, reference]);
         const resultsIterator = await this.ctx.stub.getHistoryForKey(ledgerKey);
         let results = await this.getAllResults(resultsIterator, true);
 
@@ -47,7 +47,7 @@ class QueryUtils {
     // 
     // ===========================================================================================
     /**
-    * queryOwner commercial paper
+    * queryOwner vaccine
     * @param {String} assetspace the asset space (eg MagnetoCorp's assets)
     */
     async queryKeyByPartial(assetspace) {
@@ -55,9 +55,7 @@ class QueryUtils {
         if (arguments.length < 1) {
             throw new Error('Incorrect number of arguments. Expecting 1');
         }
-        // ie namespace + prefix to assets etc eg 
-        // "Key":"org.papernet.paperMagnetoCorp0001"   (0002, etc)
-        // "Partial":'org.papernet.paperlistMagnetoCorp"'  (using partial key, find keys "0001", "0002" etc)
+       
         const resultsIterator = await this.ctx.stub.getStateByPartialCompositeKey(this.name, [assetspace]);
         let method = this.getAllResults;
         let results = await method(resultsIterator, false);
@@ -66,80 +64,6 @@ class QueryUtils {
     }
 
 
-    // ===== Example: Parameterized rich query =================================================
-    // queryKeyByOwner queries for assets based on a passed in owner.
-    // This is an example of a parameterized query accepting a single query parameter (owner).
-    // Only available on state databases that support rich query (e.g. CouchDB)
-    // =========================================================================================
-    /**
-    *
-    * @param {String} name 
-    */
-    async queryKeyByName(name) {
-        //  
-        let self = this;
-        if (arguments.length < 1) {
-            throw new Error('Incorrect number of arguments. Expecting owner name.');
-        }
-        let queryString = {};
-        queryString.selector = {};
-        //  queryString.selector.docType = 'indexOwnerDoc';
-        queryString.selector.name= name;
-        // set to (eg)  '{selector:{owner:MagnetoCorp}}'
-        let method = self.getQueryResultForQueryString;
-        let queryResults = await method(this.ctx, self, JSON.stringify(queryString));
-        return queryResults;
-    }
-
-    // ===== Example: Ad hoc rich query ========================================================
-    // queryAdhoc uses a query string to perform a query for marbles..
-    // Query string matching state database syntax is passed in and executed as is.
-    // Supports ad hoc queries that can be defined at runtime by the client.
-    // If this is not desired, follow the queryKeyByOwner example for parameterized queries.
-    // Only available on state databases that support rich query (e.g. CouchDB)
-    // example passed using VS Code ext: ["{\"selector\": {\"owner\": \"MagnetoCorp\"}}"]
-    // =========================================================================================
-    /**
-    * query By AdHoc string (commercial paper)
-    * @param {String} queryString actual MangoDB query string (escaped)
-    */
-    async queryByAdhoc(queryString) {
-
-        if (arguments.length < 1) {
-            throw new Error('Incorrect number of arguments. Expecting ad-hoc string, which gets stringified for mango query');
-        }
-        let self = this;
-
-        if (!queryString) {
-            throw new Error('queryString must not be empty');
-        }
-        let method = self.getQueryResultForQueryString;
-        let queryResults = await method(this.ctx, self, JSON.stringify(queryString));
-        return queryResults;
-    }
-
-    // WORKER functions are below this line: these are called by the above functions, where iterator is passed in
-
-    // =========================================================================================
-    // getQueryResultForQueryString woerk function executes the passed-in query string.
-    // Result set is built and returned as a byte array containing the JSON results.
-    // =========================================================================================
-    /**
-     * Function getQueryResultForQueryString
-     * @param {Context} ctx the transaction context
-     * @param {any}  self within scope passed in
-     * @param {String} the query string created prior to calling this fn
-    */
-    async getQueryResultForQueryString(ctx, self, queryString) {
-
-        // console.log('- getQueryResultForQueryString queryString:\n' + queryString);
-
-        const resultsIterator = await ctx.stub.getQueryResult(queryString);
-        let results = await self.getAllResults(resultsIterator, false);
-
-        return results;
-
-    }
 
     /**
      * Function getAllResults
@@ -166,7 +90,7 @@ class QueryUtils {
                     } else {
                         try {
                             jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
-                            // report the commercial paper states during the asset lifecycle, just for asset history reporting
+                            // report the vaccine states during the asset lifecycle, just for asset history reporting
                             switch (jsonRes.Value.currentState) {
                                 case 1:
                                     jsonRes.Value.currentState = 'PENDING';
