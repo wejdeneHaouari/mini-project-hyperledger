@@ -17,7 +17,7 @@ async function loadPage(req, res) {
     req.session.messages = { databaseError: FETCH_INFO_ERROR_MESSAGE };
   }
   
-  req.session.messages = { success: " vaccine successfully issued " };
+
   res.render('pages/list-vaccine', {vaccines : vaccines});
 }
 

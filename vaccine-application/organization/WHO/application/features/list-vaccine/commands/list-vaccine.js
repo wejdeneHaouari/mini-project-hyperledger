@@ -7,7 +7,7 @@ const Lot = require('../../../../contract/lib/lot.js');
 const connectionHP = require('../../login/commands/connect-hyperledger.js')
 
 
-async function listVaccine(req, res) {
+async function listVaccine() {
 
     
    

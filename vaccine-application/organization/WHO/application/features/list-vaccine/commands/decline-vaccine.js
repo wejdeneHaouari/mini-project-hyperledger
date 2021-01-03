@@ -8,7 +8,7 @@ const connectionHP = require('../../login/commands/connect-hyperledger.js')
 const { listVaccine } = require('./list-vaccine.js');
 const { getUser } = require('../repository');
 
-async function appoveVaccineAndGetListVaccine(ref) {
+async function declineVaccineAndGetListVaccine(ref) {
    
     let owner = "pfizer";
     
@@ -20,7 +20,7 @@ async function appoveVaccineAndGetListVaccine(ref) {
        
   
        
-       const issueResponse = await contract.submitTransaction('approveVaccine',
+       const issueResponse = await contract.submitTransaction('declineVaccine',
        owner, ref);
         
 
@@ -59,7 +59,7 @@ async function loadPage(req, res) {
 
 
   try {
-    vaccines = await appoveVaccineAndGetListVaccine(ref);
+    vaccines = await declineVaccineAndGetListVaccine(ref);
     
       
     

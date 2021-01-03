@@ -54,7 +54,7 @@
                               <i class="bg-success"></i>  APPROVED
                             <% } %>
                             <%if (vaccines[i].Record.currentState ==3 ) { %>
-                              <i class="bg-error"></i>  DECLINED
+                              <i class="bg-red"></i>  DECLINED
                              <% } %>
                         </span>
                       </td>
@@ -72,9 +72,9 @@
                             <i class="fas fa-ellipsis-v"></i>
                           </a>
                           <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                    
-                            <a class="dropdown-item" href="#">Decline</a>
-                          
+                            <a class="dropdown-item" href="/approve-vaccine?ref=<%= vaccines[i].Record.reference %>">Approve</a>
+                            <a class="dropdown-item" href="/decline-vaccine?ref=<%= vaccines[i].Record.reference %>">Decline</a>
+                            
                           </div>
                         </div>
                       </td>
