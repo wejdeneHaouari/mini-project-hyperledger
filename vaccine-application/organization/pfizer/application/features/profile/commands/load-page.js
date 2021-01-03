@@ -11,7 +11,7 @@ async function loadPage(req, res) {
     req.session.messages = { databaseError: FETCH_INFO_ERROR_MESSAGE };
   }
 
-  req.session.userInfo = { ...userInfo };
+  req.session.userInfo = { test: "test" };
   res.render('pages/profile');
 }
 

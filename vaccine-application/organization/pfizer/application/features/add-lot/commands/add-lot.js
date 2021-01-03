@@ -14,9 +14,8 @@ async function addLot(req, res) {
     const {
       user: { id },
     } = req;
-    console.log("req:")
-    console.log(req.body);
-    if ( true || (req.body && req.body.numero && req.body.quantite && req.body.vaccineRef && req.body.fabricationDate && req.body.expirationDate)){
+   
+    if  (req.body && req.body.numero && req.body.quantite && req.body.vaccineRef && req.body.fabricationDate && req.body.expirationDate){
          numero = req.body.numero;
          quantite = req.body.quantite;
          vaccineRef = req.body.vaccineRef;
@@ -25,7 +24,7 @@ async function addLot(req, res) {
     }else{
        
         req.session.messages = {
-            errors: { inputError: "invalid input" },
+            errors: "invalid input",
           };
           return res.status(500).redirect('/add-lot');
     }
@@ -40,7 +39,8 @@ async function addLot(req, res) {
         console.log('Submit lot add transaction.');
       
         const issueResponse = await contract.submitTransaction('addLot',
-        numero, quantite, vaccineRef, fabricationDate, expirationDate, owner);
+        owner, numero, quantite, vaccineRef, fabricationDate, expirationDate);
+        
 
          //const issueResponse = await contract.submitTransaction('queryHistory',
          // '00004');
@@ -60,9 +60,7 @@ async function addLot(req, res) {
     } catch (error) {
         console.log(`Error processing transaction. ${error}`);
         console.log(error.stack);
-        req.session.messages = {
-            errors: { internalServerError: error.stack },
-           };
+        req.session.messages = { errors: `Error processing transaction. ${error.stack}`};
            return res.status(500).redirect('/add-lot');
 
 
