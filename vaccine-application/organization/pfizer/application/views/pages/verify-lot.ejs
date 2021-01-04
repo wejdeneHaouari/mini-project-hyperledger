@@ -14,7 +14,7 @@
           <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
             <div class="card card-profile shadow">
               <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <p>Vaccine Information</p>
+                <p>Details</p>
               </div>
              
               <div class="card-body pt-0 pt-md-4">
@@ -22,8 +22,19 @@
                   
                 </div>
                 <div class="text-center">
-                  <h3>
-                      <%= messages.vaccine.name %><span class="font-weight-light">
+                  <h4>Vaccine Details</h4>
+                 
+                    <div class="h5 mt-4">
+                      <i class="ni business_briefcase-24 mr-2"></i>Vaccine Name
+                    </div>
+                    <div>
+                      <i class="ni education_hat mr-2"></i>      <%= messages.vaccine.name %>
+                    </div>
+                  
+                    <div class="h5 mt-4">
+                      <i class="ni business_briefcase-24 mr-2"></i>Vaccine Status
+                    </div>
+
                         <%if (messages.vaccine.currentState == 1) { %>
                           <i class="bg-yellow"></i>  PENDING
                           <% } %>
@@ -33,8 +44,8 @@
                           <%if (messages.vaccine.currentState ==3 ) { %>
                             <i class="bg-red"></i>  DECLINED
                            <% } %>
-                      </span>
-                  </h3>
+                     
+                  
                  
                   <div class="h5 mt-4">
                     <i class="ni business_briefcase-24 mr-2"></i>Issue Date
@@ -42,16 +53,39 @@
                   <div>
                     <i class="ni education_hat mr-2"></i>    <%=   messages.vaccine.issueDateTime%>
                   </div>
+                  <div class="h5 mt-4">
+                    <i class="ni business_briefcase-24 mr-2"></i>composition
+                  </div>
+                  <div>
+                    <i class="ni education_hat mr-2"></i>   <%=   messages.vaccine.composition%> 
+                  </div>
                   <hr class="my-4" />
-                  <p>  <%=   messages.vaccine.composition%> 
-                   </p>
-                  
+                  <h4>Lot Details</h4>
+                  <div class="text-center">
+                
+                 
+                    <div class="h5 mt-4">
+                      <i class="ni business_briefcase-24 mr-2"></i>fabrication Date
+                    </div>
+                    <div>
+                      <i class="ni education_hat mr-2"></i>    <%=   messages.lot[0].Value.fabricationDate%>
+                    </div>
+                    <div class="h5 mt-4">
+                      <i class="ni business_briefcase-24 mr-2"></i>expiration Date
+                    </div>
+                    <div>
+                      <i class="ni education_hat mr-2"></i>    <%=   messages.lot[0].Value.expirationDate%>
+                    </div>
+                    
+                    
+                  </div>
                 </div>
               </div>
             </div>
           </div>
          <% } %>
-        
+
+  
         
 
 
@@ -101,14 +135,7 @@
                       </div>
                     </div>
                    
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-expirationDate"> expiration Date</label>
-                        <input type="text" id="input-expirationDate" class="form-control form-control-alternative" name="expirationDate" placeholder="expiration Date" >
-                        <% if (locals.messages && messages.errors && messages.errors.expirationDate) { %>
-                          <strong class="invalid-feedback" style="display: block"><%= messages.errors.expirationDate %></strong>
-                        <% } %>
-                      </div>
-                    </div>
+                   
 
                    
 

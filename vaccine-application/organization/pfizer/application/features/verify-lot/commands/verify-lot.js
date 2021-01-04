@@ -35,7 +35,10 @@ async function verifyLot(req, res) {
         let queryResponse = await contract.evaluateTransaction('getVaccineOfLot', 'pfizer', numero );
         let json = JSON.parse(queryResponse.toString());
         console.log("vaccine", json  )
-        req.session.messages = { vaccine: json};
+        let queryResponse2 = await contract.evaluateTransaction('queryHistoryLot', 'pfizer',numero );
+        let json2 = JSON.parse(queryResponse2.toString());
+        console.log("history",json2)
+        req.session.messages = { vaccine: json, lot:json2};
         res.redirect('/verify-lot');
 
 
