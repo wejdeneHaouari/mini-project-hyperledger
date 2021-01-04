@@ -11,6 +11,7 @@ const mountVaccineRoutes = require('../features/add-vaccine/routes');
 const mountLotRoutes = require('../features/add-lot/routes');
 const listVaccineRoutes = require('../features/list-vaccine/routes');
 const listLotRoutes = require('../features/list-lot/routes');
+const verifyLotRoutes = require('../features/verify-lot/routes');
 function isAuthenticated(req, res, next) {
   if (req.user && req.isAuthenticated()) {
     return next();
@@ -45,4 +46,5 @@ mountVaccineRoutes(router, [isAuthenticated]);
 mountLotRoutes(router,[isAuthenticated])
 listVaccineRoutes(router,[isAuthenticated])
 listLotRoutes(router,[isAuthenticated])
+verifyLotRoutes(router);
 module.exports = router;
