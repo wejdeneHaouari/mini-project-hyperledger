@@ -35,6 +35,7 @@ async function verifyLot(req, res) {
         let queryResponse = await contract.evaluateTransaction('getVaccineOfLot', 'pfizer', numero );
         let json = JSON.parse(queryResponse.toString());
         console.log("vaccine", json  )
+        
         let queryResponse2 = await contract.evaluateTransaction('queryHistoryLot', 'pfizer',numero );
         let json2 = JSON.parse(queryResponse2.toString());
         console.log("history",json2)
@@ -44,9 +45,9 @@ async function verifyLot(req, res) {
 
 
     } catch (error) {
-        console.log(`Error processing transaction. ${error}`);
-        console.log(error.stack);
-        req.session.messages = { errors: `Error processing transaction. ${error.stack}`};
+        req.session.messages = {
+            errors: "error",
+          };
            return res.status(500).redirect('/verify-lot');
 
 

@@ -31,55 +31,59 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% for(var i=0; i < vaccines.length; i++) { %>
-                    <tr>
-                      
-                      <td>
-                        <%= vaccines[i].Record.name %>
-                      </td>
-                      
-                      <td>
-                      
-                        <%=   vaccines[i].Record.reference%>
-                      </td>
-                      <td>
-                        <span class="badge badge-dot mr-4">
-                      
-
-
-                          <%if (vaccines[i].Record.currentState == 1) { %>
-                            <i class="bg-yellow"></i>  PENDING
-                            <% } %>
-                            <%if (vaccines[i].Record.currentState ==2 ) { %>
-                              <i class="bg-success"></i>  APPROVED
-                            <% } %>
-                            <%if (vaccines[i].Record.currentState ==3 ) { %>
-                              <i class="bg-red"></i>  DECLINED
-                             <% } %>
-                        </span>
-                      </td>
-                      <td>
-                        <%=   vaccines[i].Record.issueDateTime%>
-                       
-                      </td>
-                      <td>
-                        <%=   vaccines[i].Record.composition%>
-                       
-                      </td>
-                      <td class="text-right">
-                        <div class="dropdown">
-                          <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v"></i>
-                          </a>
-                          <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                            <a class="dropdown-item" href="#">Accept</a>
-                            <a class="dropdown-item" href="#">Decline</a>
-                          
+                  <%if (vaccines) { %>
+                    <% for(var i=0; i < vaccines.length; i++) { %>
+                      <tr>
+                        
+                        <td>
+                          <%= vaccines[i].Record.name %>
+                        </td>
+                        
+                        <td>
+                        
+                          <%=   vaccines[i].Record.reference%>
+                        </td>
+                        <td>
+                          <span class="badge badge-dot mr-4">
+                        
+  
+  
+                            <%if (vaccines[i].Record.currentState == 1) { %>
+                              <i class="bg-yellow"></i>  PENDING
+                              <% } %>
+                              <%if (vaccines[i].Record.currentState ==2 ) { %>
+                                <i class="bg-success"></i>  APPROVED
+                              <% } %>
+                              <%if (vaccines[i].Record.currentState ==3 ) { %>
+                                <i class="bg-red"></i>  DECLINED
+                               <% } %>
+                          </span>
+                        </td>
+                        <td>
+                          <%=   vaccines[i].Record.issueDateTime%>
+                         
+                        </td>
+                        <td>
+                          <%=   vaccines[i].Record.composition%>
+                         
+                        </td>
+                        <td class="text-right">
+                          <div class="dropdown">
+                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                              <a class="dropdown-item" href="#">Accept</a>
+                              <a class="dropdown-item" href="#">Decline</a>
+                            
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                 <% } %>
+                        </td>
+                      </tr>
+                   <% } %>
+                    <% } %>
+
+                 
 
 
                  

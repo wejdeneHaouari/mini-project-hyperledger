@@ -3,8 +3,8 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_USER: 'wejdene'
-      POSTGRES_PASSWORD: 'root'
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'admin'
     ports:
       - 5433:5432
     volumes:
