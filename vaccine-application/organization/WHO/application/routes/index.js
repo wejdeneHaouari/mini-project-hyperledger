@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-
+const verifyLotRoutes = require('../features/verify-lot/routes');
 const mountRegisterRoutes = require('../features/register/routes');
 const mountLoginRoutes = require('../features/login/routes');
 const mountLogoutRoutes = require('../features/logout/routes');
@@ -18,26 +18,17 @@ function isAuthenticated(req, res, next) {
 
 /* GET home page. */
 router.get('/', isAuthenticated, (req, res) => {
-  res.render('pages/dashboard');
+  return res.redirect('/list-vaccine');
 });
 
-router.get('/icons', isAuthenticated, (req, res) => {
-  res.render('pages/icons');
-});
 
-router.get('/maps', isAuthenticated, (req, res) => {
-  res.render('pages/maps');
-});
 
-router.get('/tables', isAuthenticated, (req, res) => {
-  res.render('pages/tables');
-});
 
 mountRegisterRoutes(router);
 mountLoginRoutes(router);
 mountLogoutRoutes(router, [isAuthenticated]);
 mountResetPasswordRoutes(router);
 mountProfileRoutes(router, [isAuthenticated]);
-
+verifyLotRoutes(router);
 listVaccineRoutes(router,[isAuthenticated])
 module.exports = router;
