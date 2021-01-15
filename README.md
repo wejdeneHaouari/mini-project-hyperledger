@@ -61,11 +61,12 @@ Below are the quick start instructions for putting in place our project.
 
 2) Install and Instantiate the Contracts
 
-3) Run client applications in the roles of pfizer and WHO for the validation of the vaccine (web and CMD based)
+3) Run client applications in the roles of pfizer and WHO for the validation of the vaccine (web based)
 
    - Add the vaccine as pfizer (org2)
    - Add the lot of vaccines as pfizer (org2)
    - validate the vaccine as WHO (org1)
+   - verify the validity of a certian lot as normal user
 
    See also the transaction flow and alternatives in the Scenario Overview below.
 
@@ -99,8 +100,6 @@ For the test phase, it is advised to have 3 terminal windows (consoles) open;
 * one for WHO 
 
 Change to the `vaccine-application` directory in each window. 
-
-
 
 ```
 cd mini-project-hyperledger/vaccine-application
@@ -227,7 +226,7 @@ To recap: we've downloaded the Hyperledger Fabric samples repository from GitHub
 Our project allows you to act as two organizations by
 providing two separate folders for WHO and pfizer. The two folders
 contain the smart contracts and application files for each organization. Because
-the two organizations have different roles in the trading of the vaccine,
+the two organizations have different roles,
 the application files are different for each organization. Open a new window in
 the `mini-project-hyperledger` repository and use the following command to change into
 the pfizer directory:
@@ -261,11 +260,12 @@ Note that you can pass a port number to the above command if the default port in
 (pfizer admin)$ ./monitordocker.sh net_test <port_number>
 ```
 
-This window will now show output from the Docker containers for the remainder of the
-tutorial, so go ahead and open anOther command window. The next thing we will do is
-examine the smart contract that pfizer will use to issue to the vaccine.
+This window will now show output from the Docker containers all along this application. The next thing we will do is
+examine the smart contract that pfizer will use to add the vaccine.
 
-## Examine the vaccine smart contract
+## prepare and deploy the smart contract
+
+### Examine the vaccine smart contract
 
 `issue` and `validate` are the three functions at the heart of the vaccine smart contract. It is used by applications to submit transactions which
 correspondingly issue and validate vaccine on the ledger. Our next
@@ -309,7 +309,7 @@ example code editor displaying the vaccine smart contract in `vaccinecontract.js
   This method defines the vaccine `issue` transaction for Vaccinet. The parameters that are passed to this method will be used to issue the new vaccine.
   Other code details can be found under the contract folder of each organization.
 
-## Deploy the smart contract to the channel
+### Deploy the smart contract to the channel
 
 Before `vaccinecontract` can be invoked by applications, it must be installed onto
 the appropriate peer nodes of the test network and then defined on the channel
@@ -354,18 +354,18 @@ contract can be packaged into a chaincode using the
 `peer lifecycle chaincode package` command. In the pfizer administrator's
 command window, run the following command to issue the chaincode package:
 ```
-(pfizer admin)$ peer lifecycle chaincode package cp.tar.gz --lang node --path ./contract --label cp_0
+(pfizer admin)$ peer lifecycle chaincode package v.tar.gz --lang node --path ./contract --label v_0
 ```
 The pfizer admin can now install the chaincode on the pfizer peer using
 the `peer lifecycle chaincode install` command:
 ```
-(pfizer admin)$ peer lifecycle chaincode install cp.tar.gz
+(pfizer admin)$ peer lifecycle chaincode install v.tar.gz
 ```
 When the chaincode package is installed, you will see messages similar to the following
 printed in your terminal:
 ```
-2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nEcp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c\022\004cp_0" >
-2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
+2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nEv_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c\022\004v_0" >
+2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: v_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
 Because the pfizer admin has set `CORE_PEER_ADDRESS=localhost:9051` to
 target its commands to `peer0.org2.example.com`, the `INFO 001 Installed remotely...`
@@ -383,14 +383,14 @@ The command will return the same package identifier as the install command. You
 should see output similar to the following:
 ```
 Installed chaincodes on peer:
-Package ID: cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c, Label: cp_0
+Package ID: v_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c, Label: v_0
 ```
 
 We will need the package ID in the next step, so we will save it as an environment
 variable. The package ID may not be the same for all users, so you need to
 complete this step using the package ID returned from your command window.
 ```
-export PACKAGE_ID=cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
+export PACKAGE_ID=v_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
 
 The admin can now approve the chaincode definition for pfizer using the
@@ -431,11 +431,11 @@ source WHO.sh
 We can now install and approve `vaccinecontract` as the WHO. Run the following
 command to package the chaincode:
 ```
-(WHO admin)$ peer lifecycle chaincode package cp.tar.gz --lang node --path ./contract --label cp_0
+(WHO admin)$ peer lifecycle chaincode package v.tar.gz --lang node --path ./contract --label v_0
 ```
 The admin can now install the chaincode on the WHO peer:
 ```
-(WHO admin)$ peer lifecycle chaincode install cp.tar.gz
+(WHO admin)$ peer lifecycle chaincode install v.tar.gz
 ```
 We then need to query and save the packageID of the chaincode that was just
 installed:
@@ -445,7 +445,7 @@ installed:
 Save the package ID as an environment variable. Complete this step using the
 package ID returned from your console.
 ```
-export PACKAGE_ID=cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
+export PACKAGE_ID=v_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
 
 The WHO admin can now approve the chaincode definition of `vaccinecontract`:
@@ -476,32 +476,30 @@ committed to the channel. You can use the `docker ps` command to see
 (WHO admin)$ docker ps
 
 CONTAINER ID        IMAGE                                                                                                                                                               COMMAND                  issueD             STATUS              PORTS                                        NAMES
-d4ba9dc9c55f        dev-peer0.org1.example.com-cp_0-ebef35e7f1f25eea1dcc6fcad5019477cd7f434c6a5dcaf4e81744e282903535-05cf67c20543ee1c24cf7dfe74abce99785374db15b3bc1de2da372700c25608   "docker-entrypoint.s…"   30 seconds ago      Up 28 seconds                                                    dev-peer0.org1.example.com-cp_0-ebef35e7f1f25eea1dcc6fcad5019477cd7f434c6a5dcaf4e81744e282903535
-a944c0f8b6d6        dev-peer0.org2.example.com-cp_0-1487670371e56d107b5e980ce7f66172c89251ab21d484c7f988c02912ddeaec-1a147b6fd2a8bd2ae12db824fad8d08a811c30cc70bc5b6bc49a2cbebc2e71ee   "docker-entrypoint.s…"   31 seconds ago      Up 28 seconds                                                    dev-peer0.org2.example.com-cp_0-1487670371e56d107b5e980ce7f66172c89251ab21d484c7f988c02912ddeaec
+d4ba9dc9c55f        dev-peer0.org1.example.com-v_0-ebef35e7f1f25eea1dcc6fcad5019477cd7f434c6a5dcaf4e81744e282903535-05cf67c20543ee1c24cf7dfe74abce99785374db15b3bc1de2da372700c25608   "docker-entrypoint.s…"   30 seconds ago      Up 28 seconds                                                    dev-peer0.org1.example.com-v_0-ebef35e7f1f25eea1dcc6fcad5019477cd7f434c6a5dcaf4e81744e282903535
+a944c0f8b6d6        dev-peer0.org2.example.com-v_0-1487670371e56d107b5e980ce7f66172c89251ab21d484c7f988c02912ddeaec-1a147b6fd2a8bd2ae12db824fad8d08a811c30cc70bc5b6bc49a2cbebc2e71ee   "docker-entrypoint.s…"   31 seconds ago      Up 28 seconds                                                    dev-peer0.org2.example.com-v_0-1487670371e56d107b5e980ce7f66172c89251ab21d484c7f988c02912ddeaec
 ```
 
 Notice that the containers are named to indicate the peer that started it, and
 the fact that it's running `vaccinecontract` version `0`.
 
 Now that we have deployed the `vaccinecontract` chaincode to the channel, we can
-use the pfizer application to issue the vaccine. Let's take a
+use the pfizer application to add the vaccine. Let's take a
 moment to examine the application structure.
 
 ## Getting ready for Client Applications 
 
 ### Application structure
 
-The smart contract contained in `vaccinecontract` is called by pfizer's
-application `issue.js`. James uses this application to submit a transaction
-to the ledger which issues  vaccine `00001`. Let's quickly examine how
-the `issue` application works.
+The smart contract contained in `vaccinecontract` is called by pfizer's application. James uses this application to submit a transaction
+to the ledger which can be,for example, adding a vaccine. Let's quickly examine how the `add vaccine` use case of the pfizer application works.
 
 
-Because the `issue` application submits transactions on behalf of James, it
+Because the `add vaccine` use case of the application submits transactions on behalf of James, it
 starts by retrieving James's X.509 certificate from his
 [wallet](../developapps/wallet.html), which might be stored on the local file
 system or a Hardware Security Module
-[HSM](https://en.wikipedia.org/wiki/Hardware_security_module). The `issue`
+[HSM](https://en.wikipedia.org/wiki/Hardware_security_module). The `add vaccine`
 application is then able to utilize the gateway to submit transactions on the
 channel. The Hyperledger Fabric SDK provides a
 [gateway](../developapps/gateway.html) abstraction so that applications can
@@ -511,90 +509,21 @@ Fabric applications.
 
 So let's examine the `issue` application that James is going to use. Open a
 separate terminal window for him, and in `mini-project-hyperledger` locate the pfizer
-`/application` folder:
+`/application/features/add-vaccine` folder:
 
 ```
-(James)$ cd vaccine-application/organization/pfizer/application/
-(James)$ ls
-
-addToWallet.js		enrollUser.js		issue.js		package.json
+(James)$ cd vaccine-application/organization/pfizer/application/features/add-vaccine
 ```
 
-`addToWallet.js` is the program that James is going to use to load his
-identity into his wallet, and `issue.js` will use this identity to create
- vaccine `00001` on behalf of pfizer by invoking `vaccinecontract`.
+`addToWallet.js` under the application folder is the program that James is going to use to load his
+identity into his wallet, and the application features `add-vaccine`, for example, will use this identity to create
+ vaccine on behalf of pfizer by invoking `vaccinecontract`.
 
-Change to the directory that contains pfizer's copy of the application
-`issue.js`, and use your code editor to examine it:
 
-```
-(James)$ cd vaccine-application/organization/pfizer/application
-(James)$ code issue.js
-```
-This scenario is to test our application before working on our web application 
+### Wallet
 
-### Application dependencies
-
-The `issue.js` application is written in JavaScript and designed to run in the
-Node.js environment that acts as a client to the vaccinet network.
-As is common practice, pfizer's application is built on many
-external node packages --- to improve quality and speed of development. Consider
-how `issue.js` includes the `js-yaml`
-[package](https://www.npmjs.com/package/js-yaml) to process the YAML gateway
-connection profile, or the `fabric-network`
-[package](https://www.npmjs.com/package/fabric-network) to access the `Gateway`
-and `Wallet` classes:
-
-```JavaScript
-const yaml = require('js-yaml');
-const { Wallets, Gateway } = require('fabric-network');
-```
-
-These packages have to be downloaded from [npm](https://www.npmjs.com/) to the
-local file system using the `npm install` command. By convention, packages must
-be installed into an application-relative `/node_modules` directory for use at
-runtime.
-
-Open the `package.json` file to see how `issue.js` identifies the packages to
-download and their exact versions by examining the "dependencies" section of the file.
-
-**npm** versioning is very powerful; you can read more about it
-[here](https://docs.npmjs.com/getting-started/semantic-versioning).
-
-Let's install these packages with the `npm install` command -- this may take up
-to a minute to complete:
-
-```
-(James)$ cd vaccine-application/organization/pfizer/application/
-(James)$ npm install
-
-(           ) extract:lodash: sill extract ansi-styles@3.2.1
-(...)
-added 738 packages in 46.701s
-```
-
-See how this command has updated the directory:
-
-```
-(James)$ ls
-
-enrollUser.js 		node_modules	      	package.json
-issue.js	      	package-lock.json
-```
-
-Examine the `node_modules` directory to see the packages that have been
-installed. These are lots, because `js-yaml` and `fabric-network` are themselves
-built on othese npm packages! Helpfully, the `package-lock.json`
-[file](https://docs.npmjs.com/files/package-lock.json) identifies the exact
-versions installed, which can prove invaluable if you want to exactly reproduce
-environments; to test, diagnose problems or deliver proven applications for
-example.
-
-## Wallet
-
-James is almost ready to run `issue.js` to issue pfizer  vaccine
-`00001`; these's just one remaining task to perform! As `issue.js` acts on
-behalf of James, and therefore pfizer, it will use identity from him
+James is almost ready to run the application to add pfizer  vaccine; these's just one remaining task to perform! As the pfizer application acts on
+behalf of James, and therefore pfizer, it will use his identity
 [wallet](../developapps/wallet.html) that reflects these facts. We now need to
 perform this one-time activity of generating the appropriate X.509 credentials
 to his wallet.
@@ -602,7 +531,7 @@ to his wallet.
 The pfizer Certificate Authority running on vaccinet, `ca_org2`, has an
 application user that was registered when the network was deployed. James
 can use the identity name and secret to generate the X.509 cryptographic material
-for the `issue.js` application. The process of using a CA to generate client side
+for the pfizer application. The process of using a CA to generate client side
 cryptographic material is referred to as **enrollment**. In a real word scenario,
 a network operator would provide the name and secret of a client identity that
 was registered with the CA to an application developer. The developer would then
@@ -623,7 +552,7 @@ information to his wallet:
 ```
 (James)$ node enrollUser.js
 
-Wallet path: /Users/nikhilgupta/mini-project-hyperledger/vaccine-application/organization/pfizer/identity/user/James/wallet
+Wallet path: mini-project-hyperledger/vaccine-application/organization/pfizer/identity/user/James/wallet
 Successfully enrolled client user "James" and imported it into the wallet
 ```
 
@@ -636,11 +565,11 @@ wallet which will be used to submit transactions to vaccinet:
 James.id
 ```
 
-James can store multiple identities in his wallet, though in our example, she
+James can store multiple identities in his wallet, though in our example, he
 only uses one. The `wallet` folder contains an `James.id` file that provides
 the information that James needs to connect to the network. Other identities
 used by James would have their own file. You can open this file to see the
-identity information that `issue.js` will use on behalf of James inside a JSON
+identity information that the pfizer application will use on behalf of James inside a JSON
 file. The output has been formatted for clarity.
 ```
 (James)$  cat ../identity/user/James/wallet/*
@@ -666,7 +595,7 @@ In the file you can notice the following:
   certificate is distributed to the network so that different actors at different
   times can cryptographically verify information created by James's private key.
 
-Once the wallet was created and the smart contract tested with a simple script, the next step is the web application development.
+Once the wallet was created, the next step is the web application development.
 
 ## WEB Client Applications
 
@@ -721,34 +650,63 @@ REDIS_PORT=6379
 REDIS_PASSWORD=
 ```
 
-## Migrations and seeds
+### Migrations and seeds
 
 1. For database tables structure, in the project root run: `npm run knex migrate:latest` or `yarn knex migrate:latest` if you are using `yarn` as the default package manager
 2. To create a default user, run: `npm run knex seed:run` or `yarn knex seed:run` if you are using `yarn` as the default package manager
 
-## Run the application
+### Run the applications
 
 1. For starting the application, the following script (defined in `package.json` under `scripts`) must be called:
     - via **npm**: `npm run start` or `npm run dev` for starting the development environment, which has livereload enabled;
     - via **yarn**: `yarn start` or `yarn dev` for starting the development environment, which has livereload enabled;
 
 ### Pfizer application 
+Locate yourself under the pfizer application
+```
+cd vaccine-verification/vaccine-application/organization/pfizer/application
+```
+Run this command to launch the application
+```
+npm run start
+```
+The application will then be running on http://localhost:8100
 
 Through this application, any employee of pfizer (org 2) can, after logging in:
-* see all issued vaccines and their state
-* add a vaccine  
-* create a lot of vaccines
-* see list of lots
+* see all issued vaccines and their state ![vaccines list](img/pfizer/list-vaccine.png)
+* add a vaccine  ![vaccines list](img/pfizer/add-vaccine.png)
+* create a lot of vaccines ![vaccines list](img/pfizer/add-lot.png)
+* see list of "lots" ![vaccines list](img/pfizer/list-lot.png)
  
 ### WHO application 
+Locate yourself under the WHO application
+```
+cd vaccine-verification/vaccine-application/organization/WHO/application
+```
+Run this command to launch the application
+```
+npm run start
+```
+The application will then be running on http://localhost:8101
 
 Through this application, any employee of WHO (org 1) can, after logging in:
-* see all vaccines and approve or decline them
+* see all vaccines and approve or decline them ![vaccines list](img/who/list-vaccine.png)
 
 ### Normal user application 
+Locate yourself under the WHO application
+```
+cd vaccine-verification/vaccine-application/organization/WHO/normal-user-application
+```
+Run this command to launch the application
+```
+npm run start
+```
+The application will then be running on http://localhost:8102
 
 Through this application, any user, without login can:
-* search an existing "lot" and verify its vaccine state, composition, fabrication date and expiration date. 
+* search an existing "lot" ![vaccines list](img/user/verify-lot1.png)
+* verify its vaccine state, composition, fabrication date and expiration date.
+![vaccines list](img/user/verify-lot2.png)
 
 ## Clean up
 
