@@ -29,6 +29,6 @@ mountLoginRoutes(router);
 mountLogoutRoutes(router, [isAuthenticated]);
 mountResetPasswordRoutes(router);
 mountProfileRoutes(router, [isAuthenticated]);
-verifyLotRoutes(router);
+verifyLotRoutes(router, [isAuthenticated]);
 listVaccineRoutes(router,[isAuthenticated])
 module.exports = router;
