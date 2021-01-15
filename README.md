@@ -4,7 +4,7 @@
 
 ## The main Problem
 
-The lack of transparency and traceability of interaction with vaccine data facilitates the proliferation of vaccine trafficking circuits in which vaccine manufacturers, health establishments, distributors and health authorities are involved, in particular the appearance black markets, fake vaccines).
+The lack of transparency and traceability of the interaction with vaccine data facilitates the proliferation of vaccine trafficking circuits in which vaccine manufacturers, health establishments, distributors and health authorities are involved, in particular the appearance of black markets, fake vaccines.
 This fact has involved the shortage of vaccines, deaths from expired vaccines and immense losses to insurance companies.
 
 <details><summary>Key Objectives </summary>
@@ -12,9 +12,9 @@ This fact has involved the shortage of vaccines, deaths from expired vaccines an
 The goal of our project is to design and develop a decentralized solution that allows the exchange and confirmation of vaccine validity in a secure, fast and transparent way.
 
 We will use the blockchain technology to ensure these goals below:
-  * When adding a vaccine, validation of the vaccine by a health authority will be carried out to prevent any type of falsification. 
+  * When adding a vaccine, its validation by a health authority will be carried out to prevent any type of falsification. 
     
-  * Any user can check whethis the vaccine has been validated or not at any time.
+  * Any user can check whether the vaccine has been validated or not at any time.
     
   * Any user can know all the details about the vaccine (date of manufacture, manufacturer, ...)
   
@@ -23,7 +23,7 @@ We will use the blockchain technology to ensure these goals below:
 </p>
 </details>
  
- Expand the twisty below to see an overview diagram of a 'sample' vaccine marketplace - transactions, queries being executed by different organisations (we'll focus on two of these organisations)
+ Expand the twisty below to see an overview diagram of a 'sample' vaccine marketplace - the possible usecases and the needed entities for the solution(we'll focus on two of these organisations)
 
 <details><summary>Vaccine verification overview: usecases and diagrams</summary>
 
@@ -38,15 +38,15 @@ We will use the blockchain technology to ensure these goals below:
 
 ![](img/scenario.jpg)
 
-In this tutorial two organizations, pfizer and WHO, exchange vaccine information with each othis on 'Vaccinet', the marketplace represented by a Hyperledger Fabric blockchain network. 
+In this application two organizations, pfizer and WHO, exchange vaccine information with each Other on 'Vaccinet', the marketplace represented by a Hyperledger Fabric blockchain network. 
 
-Client applications (CLI based) are used: 
+Client applications (CLI and web based) are used: 
 
 - to perform the transactions
-- run queries (Node.js sample only)
-- examine the transaction inputs (as opposed to _states_) that are written to the ledger after you perform a transaction (using the Node.js listener).
+- run queries
+- examine the transaction inputs (as opposed to _states_) that are written to the ledger after we perform a transaction.
 
-This sample uses the `test-network` . You’ll act as James, an employee of pfizer (Org2), who will issue a vaccine on its behalf. You’ll then 'switch hats' to take the role of Jasmine, an employee of WHO (Org1), who will validate this vaccine, hold it for a period of time, and then redeem it with pfizer for a small profit or yield. Note that the smart contract sample doesn't enforce the actual hold period ; the user can, in fact, redeem the vaccine immediately. 
+This sample uses the `test-network` . We’ll act as James, an employee of pfizer (Org2), who will issue a vaccine on its behalf. We’ll then 'switch hats' to take the role of Jasmine, an employee of WHO (Org1), who will validate this vaccine.
 
 ## Quick Start
 
@@ -57,13 +57,14 @@ Below are the quick start instructions for putting in place our project.
 
 1) Install Binaries, Start the Hyperledger Fabric infrastructure
 
-   The Fabric 'test-network' will be used - this has two organizations 'Org1' and 'Org2'  WHO will be Org1, and pfizer will be Org2. 
+   The Fabric 'test-network' will be used - this has two organizations 'Org1' and 'Org2':  WHO will be Org1 and pfizer will be Org2. 
 
 2) Install and Instantiate the Contracts
 
-3) Run client applications in the roles of pfizer and WHO for the validation of the vaccine
+3) Run client applications in the roles of pfizer and WHO for the validation of the vaccine (web and CMD based)
 
    - Add the vaccine as pfizer (org2)
+   - Add the lot of vaccines as pfizer (org2)
    - validate the vaccine as WHO (org1)
 
    See also the transaction flow and alternatives in the Scenario Overview below.
@@ -75,17 +76,14 @@ Below are the quick start instructions for putting in place our project.
 A machine with the following is needed
 
 - Docker and docker-compose installed
-- Node.js v12 if you want to run JavaScript client applications
+- Node.js v12 for running JavaScript client applications
 
-You will need to install the `peer` cli binaries and cloned the `fabric-samples` repository. Once you have installed the cli binaries, ensure you have added the  `bin` directory (for your `peer` commands used by scripts below) to your exported `PATH` variable in your `.bashrc` or `.profile` directory (per below). This is important as you will be opening a number of windows which will need PATH set. Finally, check that it finds the `peer` command in your PATH using the `which` command  eg.
+First We will need to install the `peer` cli binaries, after cloning the project. Once we have installed the cli binaries, we must ensure we have added the `bin` directory (for the `peer` commands used by scripts below) to our exported `PATH` variable in the `.bashrc` or `.profile` directory (per below). This is important as we will be opening a number of windows which will need PATH set. Finally, check that it finds the `peer` command in our PATH using the `which` command  eg.
 
+Make sure to clone the `mini-project-hyperledger` Project, containing the `test-network`
 ```
-git clone https://github.com/hyperledger/fabric-samples.git
-```
+git clone https://github.com/wejdeneHaouari/mini-project-hyperledger
 
-Make sure to clone the `vaccine-verification` Project under `fabric-samples`
-```
-git clone https://github.com/wejdeneHaouari/vaccine-verification.git
 ```
 
 ```
@@ -100,12 +98,12 @@ For the test phase, it is advised to have 3 terminal windows (consoles) open;
 * one for pfizer 
 * one for WHO 
 
-Change to the `vaccine-verification` directory in each window. 
+Change to the `vaccine-application` directory in each window. 
 
 
 
 ```
-cd fabric-samples/vaccine-verification
+cd mini-project-hyperledger/vaccine-application
 ```
 
 ## Running the Infrastructure
@@ -116,8 +114,7 @@ In one console window, run the network starter script - this will start the two 
 ./network-starter.sh
 ```
 While the script is running, you will see logs of the test network being deployed.
-When the script is complete, you can use the `docker ps` command to see the
-Fabric nodes running on your local machine:
+When the script is complete, you can use the `docker ps` command to see the Fabric nodes running on your local machine:
 ```
 $ docker ps
 
@@ -132,8 +129,7 @@ a86f50ca1907        hyperledger/fabric-peer:latest      "peer node start"       
 87aef6062f23        hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   About a minute ago   Up About a minute   0.0.0.0:7054->7054/tcp                       ca_org1
 ```
 
-See if you can map these containers to the nodes of the test network (you may
-need to horizontally scroll to locate the information):
+See if you can map these containers to the nodes of the test network (you may need to horizontally scroll to locate the information):
 * The Org1 peer, `peer0.org1.example.com`, is running in container `a86f50ca1907`
 * The Org2 peer, `peer0.org2.example.com`, is running in container `77d0fcaee61b`
 * The CouchDB database for the Org1 peer, `couchdb0`, is running in container `7eb5f64bfe5f`
@@ -222,11 +218,9 @@ See how the eight containers use different IP addresses, while being part of a s
 
 Because we are operating the test network as WHO and pfizer,
 `peer0.org1.example.com` will belong to the WHO organization while
-`peer0.org2.example.com` will be operated by pfizer. Now that the test network is up and running, we can refer to our network as Vaccinet from this point
-forward.
+`peer0.org2.example.com` will be operated by pfizer. Now that the test network is up and running, we can refer to our network as Vaccinet from this point forward.
 
-To recap: you've downloaded the Hyperledger Fabric samples repository from
-GitHub and you've got a Fabric network running on your local machine. Let's now start to play the role of pfizer, who wishes to issue the vaccine.
+To recap: we've downloaded the Hyperledger Fabric samples repository from GitHub and you've got a Fabric network running on your local machine. Let's now start to play the role of pfizer, who wishes to issue the vaccine.
 
 ### Monitor the network as pfizer
 
@@ -235,10 +229,10 @@ providing two separate folders for WHO and pfizer. The two folders
 contain the smart contracts and application files for each organization. Because
 the two organizations have different roles in the trading of the vaccine,
 the application files are different for each organization. Open a new window in
-the `fabric-samples` repository and use the following command to change into
+the `mini-project-hyperledger` repository and use the following command to change into
 the pfizer directory:
 ```
-cd vaccine-verification/organization/pfizer
+cd vaccine-application/organization/pfizer
 ```
 The first thing we are going to do as pfizer is monitor the components
 of Vaccinet. An administrator can view the aggregated output from a set
@@ -268,7 +262,7 @@ Note that you can pass a port number to the above command if the default port in
 ```
 
 This window will now show output from the Docker containers for the remainder of the
-tutorial, so go ahead and open anothis command window. The next thing we will do is
+tutorial, so go ahead and open anOther command window. The next thing we will do is
 examine the smart contract that pfizer will use to issue to the vaccine.
 
 ## Examine the vaccine smart contract
@@ -277,10 +271,10 @@ examine the smart contract that pfizer will use to issue to the vaccine.
 correspondingly issue and validate vaccine on the ledger. Our next
 task is to examine this smart contract.
 
-Open a new terminal in the `fabric-samples` directory and change into the
+Open a new terminal in the `mini-project-hyperledger` directory and change into the
 pfizer folder to act as the pfizer developer.
 ```
-cd vaccine-verification/organization/pfizer
+cd vaccine-application/organization/pfizer
 ```
 You can then view the smart contract in the `contract` directory using your chosen editor (example vscode):
 ```
@@ -313,7 +307,7 @@ example code editor displaying the vaccine smart contract in `vaccinecontract.js
 * `async issue(ctx, manufacturer, reference , composition) {`
 
   This method defines the vaccine `issue` transaction for Vaccinet. The parameters that are passed to this method will be used to issue the new vaccine.
-  Othis code details can be found under the contract folder of each organization.
+  Other code details can be found under the contract folder of each organization.
 
 ## Deploy the smart contract to the channel
 
@@ -337,7 +331,7 @@ We will first install and approve the smart contract as the pfizer admin. Make
 sure that you are operating from the `pfizer` folder, or navigate back to that
 folder using the following command:
 ```
-cd vaccine-verification/organization/pfizer
+cd vaccine-application/organization/pfizer
 ```
 
 A pfizer administrator can interact with Vaccinet using the `peer` CLI. However,
@@ -413,7 +407,7 @@ approving the `vaccinecontract` chaincode without the ``--policy`` flag, the
 pfizer admin agrees to using the channel's default `Endorsement` policy,
 which in the case of the `mychannel` test channel requires a
 majority of organizations on the channel to endorse a transaction. All transactions,
-whethis valid or invalid, will be recorded on the [ledger blockchain](../ledger/ledger.html#blockchain),
+whether valid or invalid, will be recorded on the [ledger blockchain](../ledger/ledger.html#blockchain),
 but only valid transactions will update the [world state](../ledger/ledger.html#world-state).
 
 ### Install and approve the smart contract as WHO
@@ -423,10 +417,10 @@ will require a majority of organizations on the channel to agree to the chaincod
 definition before the chaincode can be committed to the channel.
 This implies that we need to approve the `Vaccinet` chaincode as both pfizer
 and WHO to get the required majority of 2 out of 2. Open a new terminal
-window in the `fabric-samples` and navigate to the folder that contains the
+window in the `mini-project-hyperledger` and navigate to the folder that contains the
 WHO smart contract and application files:
 ```
-(WHO admin)$ cd vaccine-verification/organization/WHO/
+(WHO admin)$ cd vaccine-application/organization/WHO/
 ```
 Use the script in the WHO folder to set the environment variables that will
 allow you to act as the WHO admin:
@@ -465,7 +459,7 @@ Now that WHO and pfizer have both approved the `Vaccinet` chaincode, we
 have the majority we need (2 out of 2) to commit the chaincode definition to the
 channel. Once the chaincode is successfully defined on the channel, the
 `vaccine` smart contract inside the `vaccinecontract` chaincode can be
-invoked by client applications on the channel. Since eithis organization can
+invoked by client applications on the channel. Since either organization can
 commit the chaincode to the channel, we will continue operating as the
 WHO admin.
 
@@ -516,7 +510,7 @@ gateway. Gateways and wallets make it straightforward to write Hyperledger
 Fabric applications.
 
 So let's examine the `issue` application that James is going to use. Open a
-separate terminal window for him, and in `fabric-samples` locate the pfizer
+separate terminal window for him, and in `mini-project-hyperledger` locate the pfizer
 `/application` folder:
 
 ```
@@ -599,8 +593,8 @@ example.
 ## Wallet
 
 James is almost ready to run `issue.js` to issue pfizer  vaccine
-`00001`; thise's just one remaining task to perform! As `issue.js` acts on
-behalf of James, and thisefore pfizer, it will use identity from him
+`00001`; these's just one remaining task to perform! As `issue.js` acts on
+behalf of James, and therefore pfizer, it will use identity from him
 [wallet](../developapps/wallet.html) that reflects these facts. We now need to
 perform this one-time activity of generating the appropriate X.509 credentials
 to his wallet.
@@ -629,7 +623,7 @@ information to his wallet:
 ```
 (James)$ node enrollUser.js
 
-Wallet path: /Users/nikhilgupta/fabric-samples/vaccine-application/organization/pfizer/identity/user/James/wallet
+Wallet path: /Users/nikhilgupta/mini-project-hyperledger/vaccine-application/organization/pfizer/identity/user/James/wallet
 Successfully enrolled client user "James" and imported it into the wallet
 ```
 
@@ -644,7 +638,7 @@ James.id
 
 James can store multiple identities in his wallet, though in our example, she
 only uses one. The `wallet` folder contains an `James.id` file that provides
-the information that James needs to connect to the network. Othis identities
+the information that James needs to connect to the network. Other identities
 used by James would have their own file. You can open this file to see the
 identity information that `issue.js` will use on behalf of James inside a JSON
 file. The output has been formatted for clarity.
@@ -667,7 +661,7 @@ In the file you can notice the following:
 * a `"privateKey":` used to sign transactions on James's behalf, but not
   distributed outside of his immediate control.
 
-* a `"certificate":` which contains James's public key and othis X.509
+* a `"certificate":` which contains James's public key and Other X.509
   attributes added by the Certificate Authority at certificate creation. This
   certificate is distributed to the network so that different actors at different
   times can cryptographically verify information created by James's private key.
@@ -676,16 +670,10 @@ Once the wallet was created and the smart contract tested with a simple script, 
 
 ## WEB Client Applications
 
-![Product Image](https://s3.amazonaws.com/creativetim_bucket/products/148/original/opt_ad_node_thumbnail.jpg)
-
-
-
 ### Installation
 
-1. You need `Node.js` (at least 10.x version) installed on your machine, if you don't have it, you should install it - download [link](https://nodejs.org/en/download/)
-2. [Clone the project from github](https://github.com/creativetimofficial/argon-dashboard-nodejs) or [download the archive](https://github.com/creativetimofficial/argon-dashboard-nodejs)
-3. `cd` to your downloaded Argon app
-4. Install necessary dependencies:
+1. We need `Node.js` (at least 10.x version) installed on your machine, if you don't have it, you should install it - download [link](https://nodejs.org/en/download/)
+2. Install necessary dependencies (make sure to locate to locate yourself under needed application):
     - **Via node `npm` package manager** - Run `npm install` on the project root
     - **Via `yarn` package manager** - Run `yarn install` on the project root
 
@@ -744,6 +732,23 @@ REDIS_PASSWORD=
     - via **npm**: `npm run start` or `npm run dev` for starting the development environment, which has livereload enabled;
     - via **yarn**: `yarn start` or `yarn dev` for starting the development environment, which has livereload enabled;
 
+### Pfizer application 
+
+Through this application, any employee of pfizer (org 2) can, after logging in:
+* see all issued vaccines and their state
+* add a vaccine  
+* create a lot of vaccines
+* see list of lots
+ 
+### WHO application 
+
+Through this application, any employee of WHO (org 1) can, after logging in:
+* see all vaccines and approve or decline them
+
+### Normal user application 
+
+Through this application, any user, without login can:
+* search an existing "lot" and verify its vaccine state, composition, fabrication date and expiration date. 
 
 ## Clean up
 
@@ -751,7 +756,7 @@ you can use a provided script
 to clean up your environment. Use a command window to navigate back to the root
 directory of the  vaccine sample:
 ```
-cd fabric-samples/vaccine-application
+cd mini-project-hyperledger/vaccine-application
 ```
 You can then bring down the network with the following command:
 ```
@@ -784,7 +789,7 @@ The docker environment wasn't stable. Some containers weren' up when starting th
 ### GetStateByRange()
 
 In previous versions of Fabric, getStateByRange API used to return composite keys even when doing a range query on simple keys.
-Thise was no way for Fabric to differentiate between a simple or composite so that GetStateByRange() could return only simple keys.
+these was no way for Fabric to differentiate between a simple or composite so that GetStateByRange() could return only simple keys.
 
 Composite keys have an objectType prefix. Each part of composite key is delimited by null character for example chaincodeid 0x00 objectType 0x00 ck1 0x00 ck2 0x00. This design ensured that various composite key types have an objectType namespace to guarantee no collisions across types. You can check this yourself by hovering over copy icon on any *CouchDB* record which have a composite key like in the image below.
 Now, getStateByRange() returns only simple keys and getStateByPartialCompositeKey() returns only composite keys. The namespaces for simple keys and composite keys are different to avoid collisions.
