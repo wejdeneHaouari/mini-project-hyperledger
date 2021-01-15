@@ -35,11 +35,11 @@ exports.HPConnect = () => {
 }
 
 async function newContract(){
-    const wallet = await Wallets.newFileSystemWallet('../identity/user/jasmine/wallet');
+    const wallet = await Wallets.newFileSystemWallet('../identity/user/application/wallet');
     const gateway = new Gateway();
     try {
 
-    const userName = 'jasmine';
+    const userName = 'application';
 
        // Load connection profile; will be used to locate a gateway
        let connectionProfile = yaml.safeLoad(fs.readFileSync('../gateway/connection-org1.yaml', 'utf8'));
